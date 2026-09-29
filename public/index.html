@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CYBERSTRIKE CTF | Arena Kompetisi & Analitik Keamanan Siber</title>
+  <meta name="description" content="Platform CTF Profesional berbahasa Indonesia dengan tantangan Web Exploitation, Cryptography, dan Digital Forensics. Dilengkapi Live Scoreboard, Solve Tracker, dan Analisis Poin Tertinggi.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Chart.js for High-End Analytics -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <!-- Ambient background glow elements -->
+  <div class="bg-glow glow-1"></div>
+  <div class="bg-glow glow-2"></div>
+  <div class="grid-overlay"></div>
+
+  <!-- Main Navigation Header -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <div class="logo-shield">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">CYBER<span class="highlight">STRIKE</span></span>
+          <span class="brand-subtitle">PUSAT KOMPETISI CTF</span>
+        </div>
+      </div>
+
+      <nav class="nav-links">
+        <button class="nav-tab active" data-tab="challenges">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Tantangan Soal
+        </button>
+        <button class="nav-tab" data-tab="scoreboard">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+          Papan Peringkat
+        </button>
+        <button class="nav-tab" data-tab="analytics">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+          Analisis Poin
+        </button>
+        <button class="nav-tab" data-tab="solves">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          Pelacak Solves <span class="badge-dot" id="live-solves-dot"></span>
+        </button>
+      </nav>
+
+      <!-- User Profile & Switcher Control -->
+      <div class="user-control">
+        <div class="current-user-card" id="btn-user-modal">
+          <div class="user-avatar" id="nav-user-avatar">P1</div>
+          <div class="user-info">
+            <span class="user-label">Peserta Aktif:</span>
+            <span class="user-name" id="nav-user-name">player1</span>
+          </div>
+          <div class="user-score-chip" id="nav-user-score">0 poin</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="main-wrapper">
+    <!-- SECTION 1: CHALLENGES -->
+    <section id="section-challenges" class="tab-content active">
+      <!-- Hero Banner -->
+      <div class="hero-banner">
+        <div class="hero-text">
+          <div class="hero-badge">3 Kategori Utama &bull; 12 Soal Tingkat Pemula</div>
+          <h1>Tantangan Keamanan Siber</h1>
+          <p>
+            Uji kemampuan analisis dan eksploitasi Anda. Setiap tantangan pada kategori <strong>Web Exploitation</strong>, 
+            <strong>Cryptography</strong>, dan <strong>Digital Forensics</strong> telah dilengkapi dengan petunjuk teknis (*clue*) untuk memandu investigasi Anda.
+          </p>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-card">
+            <span class="stat-num" id="stat-total-challs">12</span>
+            <span class="stat-desc">Total Soal</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-num" id="stat-solved-challs">0/12</span>
+            <span class="stat-desc">Terselesaikan</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-num" id="stat-my-points">0</span>
+            <span class="stat-desc">Poin Saya</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Category Filter Pills -->
+      <div class="filter-bar">
+        <button class="filter-btn active" data-category="ALL">Semua Kategori (12)</button>
+        <button class="filter-btn" data-category="Web Exploitation">
+          <span class="cat-dot dot-web"></span> Web Exploitation
+        </button>
+        <button class="filter-btn" data-category="Cryptography">
+          <span class="cat-dot dot-crypto"></span> Cryptography
+        </button>
+        <button class="filter-btn" data-category="Digital Forensics">
+          <span class="cat-dot dot-forensics"></span> Digital Forensics
+        </button>
+      </div>
+
+      <!-- Challenges Grid -->
+      <div class="challenges-grid" id="challenges-container">
+        <!-- Rendered dynamically via JS -->
+      </div>
+    </section>
+
+    <!-- SECTION 2: SCOREBOARD -->
+    <section id="section-scoreboard" class="tab-content">
+      <div class="section-header">
+        <div>
+          <h2>Papan Peringkat Real-Time</h2>
+          <p class="section-desc">Peringkat peserta dihitung otomatis berdasarkan akumulasi total poin dan kecepatan waktu penyelesaian.</p>
+        </div>
+        <button class="btn-refresh" id="btn-refresh-scoreboard">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+          Segarkan Data
+        </button>
+      </div>
+
+      <!-- Leaderboard Podium (Top 3) -->
+      <div class="podium-container" id="podium-wrapper">
+        <!-- Rendered via JS -->
+      </div>
+
+      <!-- Scoreboard Table -->
+      <div class="table-container">
+        <table class="scoreboard-table">
+          <thead>
+            <tr>
+              <th>Peringkat</th>
+              <th>Peserta / Tim</th>
+              <th>Afiliasi</th>
+              <th>Web Exploit</th>
+              <th>Cryptography</th>
+              <th>Forensics</th>
+              <th>🩸 First Bloods</th>
+              <th>Total Solves</th>
+              <th>Total Poin</th>
+            </tr>
+          </thead>
+          <tbody id="scoreboard-tbody">
+            <!-- Rendered via JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECTION 3: ANALYTICS & HIGHEST POINT ANALYSIS -->
+    <section id="section-analytics" class="tab-content">
+      <div class="section-header">
+        <div>
+          <h2>Pusat Analisis & Statistik Poin</h2>
+          <p class="section-desc">Analisis komprehensif siapa pemegang poin tertinggi saat ini, grafik perolehan skor, dan distribusi kategori.</p>
+        </div>
+      </div>
+
+      <!-- Spotlight: Highest Point User Card -->
+      <div class="spotlight-card" id="analytics-spotlight">
+        <!-- Dynamic Champion Showcase -->
+      </div>
+
+      <!-- Analytics Charts Grid -->
+      <div class="analytics-charts-grid">
+        <div class="chart-card">
+          <div class="chart-header">
+            <h3>Perbandingan Poin Peserta Teratas</h3>
+            <span class="chart-tag">Peringkat Skor</span>
+          </div>
+          <div class="chart-body">
+            <canvas id="chart-scores-bar"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-header">
+            <h3>Distribusi Solve per Kategori</h3>
+            <span class="chart-tag">Pangsa Pemecahan</span>
+          </div>
+          <div class="chart-body">
+            <canvas id="chart-category-doughnut"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Category Difficulty & Point Distribution Breakdown -->
+      <div class="insights-row" id="analytics-insights">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- SECTION 4: SOLVE TRACKER (AUDIT LOG) -->
+    <section id="section-solves" class="tab-content">
+      <div class="section-header">
+        <div>
+          <h2>Pelacak Penyelesaian (Solve Tracker Real-Time)</h2>
+          <p class="section-desc">Log langsung memantau siapa saja peserta yang berhasil memecahkan soal beserta waktu tepatnya.</p>
+        </div>
+        <div class="live-status-pill">
+          <span class="pulse-indicator"></span> Sinkronisasi Langsung Aktif
+        </div>
+      </div>
+
+      <div class="solves-feed-container">
+        <div class="solves-timeline" id="solves-timeline-list">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- MODAL: Challenge Details & Flag Submission -->
+  <div class="modal-backdrop" id="challenge-modal">
+    <div class="modal-box">
+      <button class="modal-close" id="btn-close-modal">&times;</button>
+      <div class="modal-header">
+        <div class="modal-badges">
+          <span class="badge-category" id="modal-cat">Web Exploitation</span>
+          <span class="badge-clue" id="modal-clue">Petunjuk Teknis</span>
+          <span class="badge-points" id="modal-pts">100 Poin</span>
+          <span class="badge-status" id="modal-status">Belum Solved</span>
+        </div>
+        <h2 id="modal-title">Judul Tantangan</h2>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-description-box">
+          <p id="modal-desc">Deskripsi tantangan...</p>
+        </div>
+
+        <!-- Action Links (Web link or File download) -->
+        <div class="modal-actions-area" id="modal-actions-container">
+          <!-- Dynamic buttons -->
+        </div>
+
+        <!-- Hint accordion -->
+        <div class="hint-container">
+          <button class="hint-toggle-btn" id="btn-toggle-hint">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Tampilkan Petunjuk (Hint)
+          </button>
+          <div class="hint-content" id="modal-hint-body" style="display: none;">
+            <p id="modal-hint-text">Petunjuk teknis...</p>
+          </div>
+        </div>
+
+        <!-- Flag Submission Form -->
+        <div class="flag-submit-section">
+          <label for="input-flag">Kirim Flag Jawaban:</label>
+          <form id="form-submit-flag">
+            <div class="flag-input-group">
+              <input type="text" id="input-flag" placeholder="Format: CTF{...}" autocomplete="off" required>
+              <button type="submit" id="btn-submit-flag" class="btn-primary">
+                Kirim Flag
+              </button>
+            </div>
+          </form>
+          <div class="submission-feedback" id="submission-feedback" style="display: none;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: User Profile / Switcher -->
+  <div class="modal-backdrop" id="user-modal">
+    <div class="modal-box modal-sm">
+      <button class="modal-close" id="btn-close-user-modal">&times;</button>
+      <div class="modal-header">
+        <h2>Pilih Profil / Ganti Peserta</h2>
+        <p style="font-size: 0.85rem; color: #94a3b8; margin-top: 0.25rem;">
+          Ganti akun untuk mencoba pengiriman flag dan melihat skor dari sudut pandang peserta yang berbeda.
+        </p>
+      </div>
+      <div class="modal-body">
+        <div class="user-select-list" id="user-selection-list">
+          <!-- Rendered via JS -->
+        </div>
+
+        <div class="divider-text"><span>Atau Daftarkan Peserta Baru</span></div>
+
+        <form id="form-create-user">
+          <input type="text" id="new-username" placeholder="Nama Peserta (misal: tim_garuda)" required>
+          <input type="text" id="new-affiliation" placeholder="Afiliasi / Komunitas (opsional)">
+          <button type="submit" class="btn-primary full-width" style="margin-top: 0.5rem;">
+            Daftar & Masuk
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Main JavaScript Logic -->
+  <script src="/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,178 @@
+[
+  {
+    "id": "web-1",
+    "title": "Inspeksi Header Tersembunyi",
+    "category": "Web Exploitation",
+    "clue": "HTML Comments & HTTP Response Header",
+    "points": 100,
+    "difficulty": "Mudah",
+    "description": "Sebuah portal web internal telah aktif. Banyak pengembang berasumsi pengguna biasa tidak memeriksa transmisi di balik layar. Analisis kode sumber klien dan respons header dari server untuk menemukan flag!",
+    "hints": [
+      "Tekan F12 (Inspect Element) -> periksa komentar HTML dan periksa tab Network / HTTP Response Header `X-Flag-Rahasia`."
+    ],
+    "targetUrl": "/challenges/web/1",
+    "flag": "CTF{inspeksi_header_tersembunyi}"
+  },
+  {
+    "id": "web-2",
+    "title": "Jejak Robot Terlarang",
+    "category": "Web Exploitation",
+    "clue": "Direktif /robots.txt & Jalur Disallow",
+    "points": 150,
+    "difficulty": "Mudah",
+    "description": "Mesin perayap web dilarang mengindeks area penyimpanan berkas rahasia. Temukan direktori apa yang disembunyikan dari mesin pencari dengan membaca berkas konfigurasi standar web crawler.",
+    "hints": [
+      "Kunjungi alamat `/challenges/web/2/robots.txt` di browser untuk membaca jalur yang dilarang (Disallow)."
+    ],
+    "targetUrl": "/challenges/web/2",
+    "flag": "CTF{jejak_robots_txt_terbongkar}"
+  },
+  {
+    "id": "web-3",
+    "title": "Pemalsuan Cookie Akses",
+    "category": "Web Exploitation",
+    "clue": "Manipulasi Cookie peran_pengguna=admin",
+    "points": 200,
+    "difficulty": "Mudah",
+    "description": "Portal ini memverifikasi peran pengguna secara langsung dari data cookie peramban tanpa validasi tanda tangan kriptografi di sisi server. Tingkatkan hak akses Anda menjadi administrator.",
+    "hints": [
+      "Buka DevTools (F12) -> tab Application -> Cookies. Ubah nilai cookie `peran_pengguna` dari `tamu` menjadi `admin`, lalu refresh halaman."
+    ],
+    "targetUrl": "/challenges/web/3",
+    "flag": "CTF{manipulasi_cookie_admin_sukses}"
+  },
+  {
+    "id": "web-4",
+    "title": "Gerbang Login Injeksi SQL",
+    "category": "Web Exploitation",
+    "clue": "SQL Injection Authentication Bypass",
+    "points": 250,
+    "difficulty": "Mudah",
+    "description": "Sistem otentikasi darurat ini rentan terhadap injeksi string SQL klasik. Lakukan bypass terhadap gerbang login tanpa perlu mengetahui kata sandi asli administrator.",
+    "hints": [
+      "Gunakan payload otentikasi SQLi klasik pada kolom username: `' OR '1'='1` atau `' OR 1=1 --`."
+    ],
+    "targetUrl": "/challenges/web/4",
+    "flag": "CTF{bypass_sqli_login_berhasil}"
+  },
+  {
+    "id": "crypto-1",
+    "title": "Sandi Pergeseran Romawi",
+    "category": "Cryptography",
+    "clue": "Caesar Cipher & Algoritma ROT13",
+    "points": 100,
+    "difficulty": "Mudah",
+    "description": "Pesan komunikasi militer lama diamankan menggunakan metode pergeseran alfabet klasik zaman Romawi (Caesar / ROT13). Dekripsi teks sandi untuk mendapatkan flag.",
+    "hints": [
+      "Gunakan CyberChef dengan resep 'ROT13' atau gunakan decoder pergeseran 13 huruf alfabet."
+    ],
+    "downloadFile": "pesan_rot13.txt",
+    "targetUrl": "/challenges/crypto/1",
+    "flag": "CTF{sandi_caesar_rot13_dasar}"
+  },
+  {
+    "id": "crypto-2",
+    "title": "Enkripsi Tiga Lapis",
+    "category": "Cryptography",
+    "clue": "Dekode Bertahap (Biner ➔ Hex ➔ Base64)",
+    "points": 150,
+    "difficulty": "Mudah",
+    "description": "Teks flag disamarkan dengan 3 tahap enkodir: Base64, Heksadesimal, dan Biner 8-bit. Balikkan proses tersebut satu per satu untuk membaca teks aslinya.",
+    "hints": [
+      "Ubah deretan biner 8-bit ke karakter teks heksadesimal -> decode Hex ke teks -> decode Base64 untuk mendapatkan flag."
+    ],
+    "downloadFile": "rahasia_tiga_lapis.txt",
+    "targetUrl": "/challenges/crypto/2",
+    "flag": "CTF{tiga_lapis_encoding_biner_hex_base64}"
+  },
+  {
+    "id": "crypto-3",
+    "title": "Teka-Teki Kunci Tunggal XOR",
+    "category": "Cryptography",
+    "clue": "Single-Byte XOR Brute Force (0-255)",
+    "points": 200,
+    "difficulty": "Mudah",
+    "description": "Ciphertext dienkripsi menggunakan operasi XOR dengan kunci 1 byte (nilai antara 0 hingga 255). Telah disediakan berkas ciphertext heksadesimal. Temukan kunci yang tepat untuk mendekripsi pesan.",
+    "hints": [
+      "Gunakan script Python atau resep 'XOR Brute Force' di CyberChef untuk menguji seluruh kemungkinan kunci 1-byte (0 sampai 255)."
+    ],
+    "downloadFile": "ciphertext_xor.hex",
+    "targetUrl": "/challenges/crypto/3",
+    "flag": "CTF{single_byte_xor_kunci_terbongkar}"
+  },
+  {
+    "id": "crypto-4",
+    "title": "Misteri Sandi Polialfabetik",
+    "category": "Cryptography",
+    "clue": "Sandi Vigenère (Kunci: RAHASIA)",
+    "points": 250,
+    "difficulty": "Mudah",
+    "description": "Sebuah dokumen rahasia diacak menggunakan sandi Vigenère polialfabetik. Kata sandi kunci yang digunakan adalah: RAHASIA.",
+    "hints": [
+      "Gunakan decoder Vigenère (seperti di CyberChef atau dcode.fr) dengan memasukkan kunci: `RAHASIA`."
+    ],
+    "downloadFile": "sandi_vigenere.txt",
+    "targetUrl": "/challenges/crypto/4",
+    "flag": "CTF{sandi_vigenere_kunci_rahasia}"
+  },
+  {
+    "id": "forensics-1",
+    "title": "Metadata Rahasia Gambar",
+    "category": "Digital Forensics",
+    "clue": "Analisis EXIF Data & Komentar Berkas",
+    "points": 100,
+    "difficulty": "Mudah",
+    "description": "Berkas citra CCTV barang bukti pengawasan siber ini menyimpan rekaman lapangan. Analis forensik yang berpengalaman tahu bahwa berkas citra menyimpan metadata tak kasat mata (EXIF, XPComment, COM Marker). Temukan flag yang tertanam di dalam metadata berkas!",
+    "hints": [
+      "Gunakan ExifTool, klik kanan berkas -> Properties -> tab Details (periksa kolom Comments / Title / Subject), jalankan perintah 'strings bukti_gambar.jpg', atau gunakan alat ekstraksi di Lab Interaktif."
+    ],
+    "downloadFile": "bukti_gambar.jpg",
+    "targetUrl": "/challenges/forensics/1",
+    "flag": "CTF{metadata_exif_gambar_ditemukan}"
+  },
+  {
+    "id": "forensics-2",
+    "title": "Memperbaiki Magic Header PNG",
+    "category": "Digital Forensics",
+    "clue": "Header PNG Corrupt (89 50 4E 47...)",
+    "points": 150,
+    "difficulty": "Mudah",
+    "description": "Berkas citra PNG ini mengalami kerusakan struktur pada tanda tangan berkas (8 byte pertama bernilai 00), sehingga ditolak oleh aplikasi penampil gambar. Perbaiki 8 byte pertama menggunakan Hex Editor untuk memulihkan dokumen rahasia, lalu dekode token akses di dalamnya!",
+    "hints": [
+      "Buka berkas berkas_rusak.png di Hex Editor (misal HxD atau https://hexed.it). Ganti 8 byte pertama (00 00 00 00 00 00 00 00) dengan Magic Bytes standar PNG: 89 50 4E 47 0D 0A 1A 0A lalu simpan dan buka gambarnya."
+    ],
+    "downloadFile": "berkas_rusak.png",
+    "targetUrl": "/challenges/forensics/2",
+    "flag": "CTF{magic_bytes_png_berhasil_diperbaiki}"
+  },
+  {
+    "id": "forensics-3",
+    "title": "Arsip Tersembunyi di Balik Gambar",
+    "category": "Digital Forensics",
+    "clue": "Steganografi Appended ZIP (7-Zip / Binwalk)",
+    "points": 200,
+    "difficulty": "Mudah",
+    "description": "Foto gedung pencakar langit berformat JPEG ini tampak normal saat dibuka di penampil gambar, namun menyimpan rahasia di balik penanda akhir berkas (EOF FF D9). Terdapat arsip ZIP yang diselipkan menggunakan teknik steganografi appended file.",
+    "hints": [
+      "Buka berkas foto_penyamaran.jpg langsung menggunakan 7-Zip atau WinRAR (klik kanan -> Open Archive), atau ekstrak dengan perintah 'binwalk -e foto_penyamaran.jpg', atau gunakan fitur deteksi di Lab Interaktif."
+    ],
+    "downloadFile": "foto_penyamaran.jpg",
+    "targetUrl": "/challenges/forensics/3",
+    "flag": "CTF{arsip_zip_tersembunyi_di_gambar}"
+  },
+  {
+    "id": "forensics-4",
+    "title": "Penyadapan Lalu Lintas Jaringan",
+    "category": "Digital Forensics",
+    "clue": "Analisis Paket PCAP & Stream HTTP Wireshark",
+    "points": 250,
+    "difficulty": "Mudah",
+    "description": "Rekaman penyadapan paket jaringan (PCAP) berhasil menangkap aktivitas komunikasi HTTP dengan peladen internal. Telusuri transmisi paket untuk menemukan token flag.",
+    "hints": [
+      "Buka berkas `rekaman_jaringan.pcap` menggunakan Wireshark. Filter paket dengan kata kunci `http` lalu klik kanan dan pilih 'Follow -> TCP Stream'."
+    ],
+    "downloadFile": "rekaman_jaringan.pcap",
+    "targetUrl": "/challenges/forensics/4",
+    "flag": "CTF{analisis_paket_jaringan_http_wireshark}"
+  }
+]

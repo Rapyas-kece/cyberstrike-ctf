@@ -1,0 +1,123 @@
+[
+  {
+    "id": "s-muma2ast",
+    "userId": "u-cyberghost",
+    "username": "cyber_ghost",
+    "challengeId": "forensics-4",
+    "challengeTitle": "Penyadapan Lalu Lintas Jaringan",
+    "category": "Digital Forensics",
+    "points": 250,
+    "timestamp": 1790662239533,
+    "isFirstBlood": false
+  },
+  {
+    "id": "s-mum8cn57",
+    "userId": "u-player1",
+    "username": "player1",
+    "challengeId": "forensics-3",
+    "challengeTitle": "Arsip Tersembunyi di Balik Gambar",
+    "category": "Digital Forensics",
+    "points": 200,
+    "timestamp": 1790659362859,
+    "isFirstBlood": true
+  },
+  {
+    "id": "s-mum7g8zm",
+    "userId": "u-player1",
+    "username": "player1",
+    "challengeId": "forensics-4",
+    "challengeTitle": "Penyadapan Lalu Lintas Jaringan",
+    "category": "Digital Forensics",
+    "points": 250,
+    "timestamp": 1790657851522,
+    "isFirstBlood": true
+  },
+  {
+    "id": "s-mum7be3r",
+    "userId": "u-player1",
+    "username": "player1",
+    "challengeId": "web-3",
+    "challengeTitle": "Pemalsuan Cookie Akses",
+    "category": "Web Exploitation",
+    "points": 200,
+    "timestamp": 1790657624871,
+    "isFirstBlood": true
+  },
+  {
+    "id": "s-1",
+    "userId": "u-cyberghost",
+    "username": "cyber_ghost",
+    "challengeId": "crypto-1",
+    "challengeTitle": "Sandi Pergeseran Romawi",
+    "category": "Cryptography",
+    "points": 100,
+    "timestamp": 1774701200000,
+    "isFirstBlood": true
+  },
+  {
+    "id": "s-2",
+    "userId": "u-neomatrix",
+    "username": "neo_matrix",
+    "challengeId": "web-1",
+    "challengeTitle": "Inspeksi Header Tersembunyi",
+    "category": "Web Exploitation",
+    "points": 100,
+    "timestamp": 1774701800000,
+    "isFirstBlood": true
+  },
+  {
+    "id": "s-3",
+    "userId": "u-cyberghost",
+    "username": "cyber_ghost",
+    "challengeId": "crypto-2",
+    "challengeTitle": "Enkripsi Tiga Lapis",
+    "category": "Cryptography",
+    "points": 150,
+    "timestamp": 1774702500000,
+    "isFirstBlood": true
+  },
+  {
+    "id": "s-4",
+    "userId": "u-shadowagent",
+    "username": "shadow_agent",
+    "challengeId": "forensics-1",
+    "challengeTitle": "Metadata Rahasia Gambar",
+    "category": "Digital Forensics",
+    "points": 100,
+    "timestamp": 1774703100000,
+    "isFirstBlood": true
+  },
+  {
+    "id": "s-5",
+    "userId": "u-neomatrix",
+    "username": "neo_matrix",
+    "challengeId": "web-2",
+    "challengeTitle": "Jejak Robot Terlarang",
+    "category": "Web Exploitation",
+    "points": 150,
+    "timestamp": 1774703900000,
+    "isFirstBlood": true
+  },
+  {
+    "id": "s-6",
+    "userId": "u-alicehacker",
+    "username": "alice_sec",
+    "challengeId": "crypto-1",
+    "challengeTitle": "Sandi Pergeseran Romawi",
+    "category": "Cryptography",
+    "points": 100,
+    "timestamp": 1774704500000,
+    "isFirstBlood": false
+  },
+  {
+    "id": "s-7",
+    "userId": "u-cyberghost",
+    "username": "cyber_ghost",
+    "challengeId": "forensics-2",
+    "challengeTitle": "Memperbaiki Magic Header PNG",
+    "category": "Digital Forensics",
+    "points": 150,
+    "timestamp": 1774705200000,
+    "isFirstBlood": true
+  }
+]

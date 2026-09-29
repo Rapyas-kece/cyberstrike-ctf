@@ -1,0 +1,20 @@
+{
+  "name": "cyberstrike-ctf",
+  "version": "1.0.0",
+  "description": "Professional CTF Platform with Web, Crypto, and Forensics challenges",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "generate:artifacts": "python generate_artifacts.py"
+  },
+  "keywords": ["ctf", "cybersecurity", "web-exploit", "cryptography", "forensics"],
+  "author": "Antigravity CTF Architect",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.7.0",
+    "helmet": "^8.3.0"
+  }
+}

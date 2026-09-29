@@ -1,0 +1,37 @@
+[
+  {
+    "id": "u-player1",
+    "username": "player1",
+    "name": "Operative Player 1",
+    "affiliation": "Independent Analyst",
+    "country": "ID"
+  },
+  {
+    "id": "u-cyberghost",
+    "username": "cyber_ghost",
+    "name": "Ghost Cyber Squad",
+    "affiliation": "Red Team Labs",
+    "country": "SG"
+  },
+  {
+    "id": "u-neomatrix",
+    "username": "neo_matrix",
+    "name": "Neo Zion Core",
+    "affiliation": "Defense Grid",
+    "country": "JP"
+  },
+  {
+    "id": "u-shadowagent",
+    "username": "shadow_agent",
+    "name": "Shadow Intel",
+    "affiliation": "Security Ops",
+    "country": "US"
+  },
+  {
+    "id": "u-alicehacker",
+    "username": "alice_sec",
+    "name": "Alice Security",
+    "affiliation": "Cyber Academy",
+    "country": "DE"
+  }
+]

@@ -1,0 +1,8 @@
+[MEMORANDUM SANDI - KLASIFIKASI TERBATAS]
+Petunjuk:
+Pesan ini dienkripsi menggunakan sandi Vigenère polialfabetik klasik.
+Kata kunci dekripsi adalah: RAHASIA (huruf kapital semua).
+
+--- CIPHERTEXT ---
+TAAALIN IAOAKQA FPLRSAI: BOKE NMRZFPKSAI RDHLSP CKF{zafli_minefmrv_kbnuq_rrhhsai}. SZMWAF LEEGHN SUAE.
+------------------

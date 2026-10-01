@@ -245,7 +245,7 @@ router.get('/3', (req, res) => {
   
   if (!role) {
     role = 'tamu';
-    res.cookie('peran_pengguna', 'tamu', { httpOnly: false });
+    res.cookie('peran_pengguna', 'tamu', { path: '/', httpOnly: false });
   }
 
   let content = '';
@@ -325,14 +325,19 @@ router.post('/4/login', (req, res) => {
   const { username = '', password = '' } = req.body;
   const cleanUser = username.trim();
 
-  // Emulasi SQL injection login bypass
+  // Emulasi SQL injection login bypass dengan dukungan berbagai pola otentikasi klasik
+  const lower = cleanUser.toLowerCase();
   const isSqliBypass = 
-    cleanUser.toLowerCase().includes("' or '1'='1") ||
-    cleanUser.toLowerCase().includes("' or 1=1") ||
-    cleanUser.toLowerCase().includes("admin' --") ||
-    cleanUser.toLowerCase().includes("admin'#") ||
-    cleanUser.toLowerCase().includes("' or ''='") ||
-    cleanUser.toLowerCase().includes("' or 1=1 --");
+    /(?:'|\")\s*(?:or|\|\|)\s*(?:'1'='1|1=1|'a'='a|true)/i.test(cleanUser) ||
+    /(?:admin|root)(?:'|\")?\s*(?:--|#|\/\*)/i.test(cleanUser) ||
+    lower.includes("' or '1'='1") ||
+    lower.includes("' or 1=1") ||
+    lower.includes("admin' --") ||
+    lower.includes("admin'#") ||
+    lower.includes("admin'/*") ||
+    lower.includes("' or ''='") ||
+    lower.includes("' or 1=1 --") ||
+    lower.includes("' or 'a'='a");
 
   if (isSqliBypass) {
     const content = `

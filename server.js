@@ -358,7 +358,7 @@ app.get('/api/analytics', (req, res) => {
     totalChallenges: challenges.length,
     totalSolves: solves.length,
     activeUsers: users.length,
-    topUser: topUser || { username: 'None', points: 0, solves: 0 },
+    topUser: topUser || { username: 'None', name: 'Belum Ada', affiliation: '-', points: 0, solves: 0 },
     categoryStats,
     categoryPoints
   });
@@ -367,6 +367,14 @@ app.get('/api/analytics', (req, res) => {
 // Fallback to index.html for SPA routing
 app.use((req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Global error handler to prevent process crashes or stack leak
+app.use((err, req, res, next) => {
+  console.error('Server Error:', err.message);
+  if (!res.headersSent) {
+    res.status(err.status || 500).json({ error: 'Internal Server Error' });
+  }
 });
 
 // Start server

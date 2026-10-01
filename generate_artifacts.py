@@ -3,7 +3,7 @@ import io
 import struct
 import zipfile
 import base64
-from PIL import Image, ImageDraw, ImageFont, ExifTags
+from PIL import Image, ImageDraw, ImageFont, ExifTags, PngImagePlugin
 
 DOWNLOADS_DIR = os.path.join(os.path.dirname(__file__), "public", "downloads")
 ASSETS_DIR = os.path.join(os.path.dirname(__file__), "assets", "source_images")
@@ -218,7 +218,10 @@ draw2.text((60, 646), f"{b64_token2}", font=font_med, fill=(255, 255, 255))
 draw2.text((60, 668), "Petunjuk: Dekode token Base64 di atas untuk mendapatkan plaintext flag resmi.", font=font_small, fill=(148, 163, 184))
 
 buf2 = io.BytesIO()
-img2.save(buf2, format='PNG')
+png_info = PngImagePlugin.PngInfo()
+png_info.add_text("Token-Akses", b64_token2)
+png_info.add_text("Comment", "Security Clearance Token (Base64). Decode with Base64 to reveal flag.")
+img2.save(buf2, format='PNG', pnginfo=png_info)
 valid_png = buf2.getvalue()
 
 # Rusak 8 byte pertama (Magic Bytes diubah jadi 00 00 00 00 00 00 00 00)

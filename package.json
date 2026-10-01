@@ -5,6 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
+    "test": "node test/test_platform.js",
     "generate:artifacts": "python generate_artifacts.py"
   },
   "keywords": ["ctf", "cybersecurity", "web-exploit", "cryptography", "forensics"],

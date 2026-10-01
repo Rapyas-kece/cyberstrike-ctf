@@ -102,19 +102,36 @@ async function fetchUserData() {
   try {
     const res = await fetch('/api/me');
     const data = await res.json();
-    state.currentUser = data.user;
+    state.currentUser = data.user || null;
     updateUserNav();
+    if (!state.currentUser) {
+      openAuthModal();
+    }
   } catch (err) {
     console.error('Gagal memuat profil pengguna:', err);
+    state.currentUser = null;
+    updateUserNav();
+    openAuthModal();
   }
 }
 
 function updateUserNav() {
-  if (!state.currentUser) return;
+  const userModalBtn = document.getElementById('btn-user-modal');
+  const loginTriggerBtn = document.getElementById('btn-login-trigger');
   const navAvatar = document.getElementById('nav-user-avatar');
   const navName = document.getElementById('nav-user-name');
-  if (navName) navName.textContent = state.currentUser.username;
-  if (navAvatar) navAvatar.textContent = state.currentUser.username.substring(0, 2).toUpperCase();
+  const statMyPoints = document.getElementById('stat-my-points');
+
+  if (state.currentUser) {
+    if (userModalBtn) userModalBtn.style.display = 'flex';
+    if (loginTriggerBtn) loginTriggerBtn.style.display = 'none';
+    if (navName) navName.textContent = state.currentUser.username;
+    if (navAvatar) navAvatar.textContent = state.currentUser.username.substring(0, 2).toUpperCase();
+  } else {
+    if (userModalBtn) userModalBtn.style.display = 'none';
+    if (loginTriggerBtn) loginTriggerBtn.style.display = 'inline-flex';
+    if (statMyPoints) statMyPoints.textContent = '0';
+  }
 }
 
 async function fetchChallengesData() {
@@ -238,56 +255,78 @@ function renderScoreboard() {
 
   // Render Podium Juara (Top 3)
   if (podiumWrapper) {
-    const top1 = board[0] || null;
-    const top2 = board[1] || null;
-    const top3 = board[2] || null;
-
-    let podiumHtml = '';
-
-    // Juara 2 (Perak)
-    if (top2) {
-      podiumHtml += `
-        <div class="podium-slot rank-2">
-          <div class="podium-rank-badge rank-badge-2">2</div>
-          <div class="podium-name">${escapeHtml(top2.username)}</div>
-          <div class="podium-affiliation">${escapeHtml(top2.affiliation || 'Peserta')}</div>
-          <div class="podium-score">${top2.totalPoints} <span style="font-size: 0.8rem;">POIN</span></div>
-          <div class="podium-solves">${top2.solveCount} Tantangan Selesai</div>
+    if (board.length === 0) {
+      podiumWrapper.innerHTML = `
+        <div class="podium-empty-notice">
+          <div class="empty-trophy">🏆</div>
+          <h3>Papan Peringkat Bersih & Siap Dimulai</h3>
+          <p>Belum ada skor yang dicatat. Selesaikan tantangan sekarang untuk merebut posisi Juara 1!</p>
         </div>
       `;
-    }
+    } else {
+      const top1 = board[0] || null;
+      const top2 = board[1] || null;
+      const top3 = board[2] || null;
 
-    // Juara 1 (Emas - Poin Tertinggi)
-    if (top1) {
-      podiumHtml += `
-        <div class="podium-slot rank-1">
-          <span class="podium-crown">👑</span>
-          <div class="podium-rank-badge rank-badge-1">1</div>
-          <div class="podium-name" style="font-size: 1.35rem; color: #f59e0b;">${escapeHtml(top1.username)}</div>
-          <div class="podium-affiliation">${escapeHtml(top1.affiliation || 'Peringkat 1')}</div>
-          <div class="podium-score" style="color: #f59e0b; font-size: 1.85rem;">${top1.totalPoints} <span style="font-size: 0.9rem;">POIN</span></div>
-          <div class="podium-solves" style="color: #cbd5e1; font-weight: 700;">⭐ POIN TERTINGGI SAAT INI ⭐</div>
-        </div>
-      `;
-    }
+      let podiumHtml = '';
 
-    // Juara 3 (Perunggu)
-    if (top3) {
-      podiumHtml += `
-        <div class="podium-slot rank-3">
-          <div class="podium-rank-badge rank-badge-3">3</div>
-          <div class="podium-name">${escapeHtml(top3.username)}</div>
-          <div class="podium-affiliation">${escapeHtml(top3.affiliation || 'Peserta')}</div>
-          <div class="podium-score">${top3.totalPoints} <span style="font-size: 0.8rem;">POIN</span></div>
-          <div class="podium-solves">${top3.solveCount} Tantangan Selesai</div>
-        </div>
-      `;
-    }
+      // Juara 2 (Perak)
+      if (top2) {
+        podiumHtml += `
+          <div class="podium-slot rank-2">
+            <div class="podium-rank-badge rank-badge-2">2</div>
+            <div class="podium-name">${escapeHtml(top2.username)}</div>
+            <div class="podium-affiliation">${escapeHtml(top2.affiliation || 'Peserta')}</div>
+            <div class="podium-score">${top2.totalPoints} <span style="font-size: 0.8rem;">POIN</span></div>
+            <div class="podium-solves">${top2.solveCount} Tantangan Selesai</div>
+          </div>
+        `;
+      }
 
-    podiumWrapper.innerHTML = podiumHtml;
+      // Juara 1 (Emas - Poin Tertinggi)
+      if (top1) {
+        podiumHtml += `
+          <div class="podium-slot rank-1">
+            <span class="podium-crown">👑</span>
+            <div class="podium-rank-badge rank-badge-1">1</div>
+            <div class="podium-name" style="font-size: 1.35rem; color: #f59e0b;">${escapeHtml(top1.username)}</div>
+            <div class="podium-affiliation">${escapeHtml(top1.affiliation || 'Peringkat 1')}</div>
+            <div class="podium-score" style="color: #f59e0b; font-size: 1.85rem;">${top1.totalPoints} <span style="font-size: 0.9rem;">POIN</span></div>
+            <div class="podium-solves" style="color: #cbd5e1; font-weight: 700;">⭐ POIN TERTINGGI SAAT INI ⭐</div>
+          </div>
+        `;
+      }
+
+      // Juara 3 (Perunggu)
+      if (top3) {
+        podiumHtml += `
+          <div class="podium-slot rank-3">
+            <div class="podium-rank-badge rank-badge-3">3</div>
+            <div class="podium-name">${escapeHtml(top3.username)}</div>
+            <div class="podium-affiliation">${escapeHtml(top3.affiliation || 'Peserta')}</div>
+            <div class="podium-score">${top3.totalPoints} <span style="font-size: 0.8rem;">POIN</span></div>
+            <div class="podium-solves">${top3.solveCount} Tantangan Selesai</div>
+          </div>
+        `;
+      }
+
+      podiumWrapper.innerHTML = podiumHtml;
+    }
   }
 
   // Render Tabel Peringkat
+  if (board.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="9" style="text-align: center; color: var(--text-dim); padding: 3rem 1rem;">
+          <div style="font-size: 1.05rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.35rem;">Belum Ada Peserta yang Terdaftar / Meraih Poin</div>
+          <div style="font-size: 0.85rem; color: var(--text-dim);">Papan skor akan otomatis terisi saat flag pertama berhasil diselesaikan.</div>
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
   tbody.innerHTML = board.map(item => {
     let rankBadge = item.rank;
     let rankClass = '';
@@ -334,28 +373,45 @@ function renderAnalytics() {
   const runnerUp = board[1] || null;
   const spotlightContainer = document.getElementById('analytics-spotlight');
 
-  if (spotlightContainer && top1) {
-    const pointMargin = runnerUp ? (top1.totalPoints - runnerUp.totalPoints) : top1.totalPoints;
+  if (spotlightContainer) {
+    if (top1) {
+      const pointMargin = runnerUp ? (top1.totalPoints - runnerUp.totalPoints) : top1.totalPoints;
 
-    spotlightContainer.innerHTML = `
-      <div class="spotlight-inner">
-        <div class="spotlight-left">
-          <div class="spotlight-trophy">🏆</div>
-          <div>
-            <div class="spotlight-label">Analisis Poin Tertinggi (Top Scorer)</div>
-            <div class="spotlight-title">${escapeHtml(top1.username)}</div>
-            <div class="spotlight-desc">
-              Memimpin klasemen perolehan skor dengan total <strong>${top1.solveCount} soal berhasil dipecahkan</strong> 
-              dan keunggulan margin <strong>+${pointMargin} poin</strong> atas peringkat ke-2!
+      spotlightContainer.innerHTML = `
+        <div class="spotlight-inner">
+          <div class="spotlight-left">
+            <div class="spotlight-trophy">🏆</div>
+            <div>
+              <div class="spotlight-label">Analisis Poin Tertinggi (Top Scorer)</div>
+              <div class="spotlight-title">${escapeHtml(top1.username)}</div>
+              <div class="spotlight-desc">
+                Memimpin klasemen perolehan skor dengan total <strong>${top1.solveCount} soal berhasil dipecahkan</strong> 
+                dan keunggulan margin <strong>+${pointMargin} poin</strong> atas peringkat ke-2!
+              </div>
+            </div>
+          </div>
+          <div class="spotlight-score-box">
+            <span class="spotlight-score-num">${top1.totalPoints}</span>
+            <span class="spotlight-score-label">Total Poin Tertinggi</span>
+          </div>
+        </div>
+      `;
+    } else {
+      spotlightContainer.innerHTML = `
+        <div class="spotlight-inner" style="border-left-color: var(--cyan);">
+          <div class="spotlight-left">
+            <div class="spotlight-trophy">⚡</div>
+            <div>
+              <div class="spotlight-label">Pusat Analisis Kompetisi</div>
+              <div class="spotlight-title">Papan Skor Bersih (0 Peserta)</div>
+              <div class="spotlight-desc">
+                Papan peringkat telah direset untuk kompetisi baru. Jadilah peretas pertama yang mengirimkan flag valid untuk memuncaki statistik!
+              </div>
             </div>
           </div>
         </div>
-        <div class="spotlight-score-box">
-          <span class="spotlight-score-num">${top1.totalPoints}</span>
-          <span class="spotlight-score-label">Total Poin Tertinggi</span>
-        </div>
-      </div>
-    `;
+      `;
+    }
   }
 
   // 2. Render Grafik
@@ -509,7 +565,13 @@ function renderSolves() {
   if (!container || !state.solves) return;
 
   if (state.solves.length === 0) {
-    container.innerHTML = `<div style="text-align: center; color: var(--text-dim); padding: 2rem;">Belum ada tantangan yang dipecahkan.</div>`;
+    container.innerHTML = `
+      <div class="solves-empty-card">
+        <div class="empty-icon">🚩</div>
+        <h3>Belum Ada Solve Tercatat</h3>
+        <p>Jadilah peretas pertama yang memecahkan tantangan dan rebut gelar <strong>First Blood</strong>!</p>
+      </div>
+    `;
     return;
   }
 
@@ -523,10 +585,16 @@ function renderSolves() {
     return `
       <div class="solve-item">
         <div class="solve-left">
-          ${s.isFirstBlood ? '<span class="solve-first-blood-badge">🩸 First Blood</span>' : ''}
-          <div class="solve-user">${escapeHtml(s.username)}</div>
+          <div class="solve-meta-row">
+            <span class="solve-user-badge">
+              <span class="user-avatar-tiny">${escapeHtml(s.username.substring(0, 2).toUpperCase())}</span>
+              ${escapeHtml(s.username)}
+            </span>
+            ${s.isFirstBlood ? '<span class="solve-first-blood-badge">🩸 First Blood</span>' : ''}
+          </div>
           <div class="solve-target">
-            berhasil menyelesaikan <strong>${escapeHtml(s.challengeTitle)}</strong> (${escapeHtml(s.category)})
+            berhasil menyelesaikan <strong class="solve-chall-name">${escapeHtml(s.challengeTitle)}</strong>
+            <span class="solve-cat-tag">(${escapeHtml(s.category)})</span>
           </div>
         </div>
         <div class="solve-right">
@@ -539,8 +607,66 @@ function renderSolves() {
 }
 
 // ===================================================================
-// MODAL TANTANGAN & USER SWITCHER
+// MODAL TANTANGAN, USER PROFILE & AUTH
 // ===================================================================
+function openAuthModal() {
+  const modal = document.getElementById('auth-modal');
+  if (modal) {
+    modal.classList.add('open');
+  }
+}
+
+function closeAuthModal() {
+  const modal = document.getElementById('auth-modal');
+  if (modal) {
+    modal.classList.remove('open');
+    const errBox = document.getElementById('auth-error-box');
+    if (errBox) {
+      errBox.style.display = 'none';
+      errBox.textContent = '';
+    }
+  }
+}
+
+window.setAuthTab = function(tab) {
+  const btnReg = document.getElementById('btn-tab-reg');
+  const btnLogin = document.getElementById('btn-tab-login');
+  const formReg = document.getElementById('form-auth-reg');
+  const formLogin = document.getElementById('form-auth-login');
+  const errBox = document.getElementById('auth-error-box');
+  if (errBox) {
+    errBox.style.display = 'none';
+    errBox.textContent = '';
+  }
+
+  if (tab === 'login') {
+    if (btnReg) btnReg.classList.remove('active');
+    if (btnLogin) btnLogin.classList.add('active');
+    if (formReg) formReg.style.display = 'none';
+    if (formLogin) formLogin.style.display = 'block';
+  } else {
+    if (btnReg) btnReg.classList.add('active');
+    if (btnLogin) btnLogin.classList.remove('active');
+    if (formReg) formReg.style.display = 'block';
+    if (formLogin) formLogin.style.display = 'none';
+  }
+};
+
+window.logoutUser = async function() {
+  try {
+    const res = await fetch('/api/user/logout', { method: 'POST' });
+    state.currentUser = null;
+    const userModal = document.getElementById('user-modal');
+    if (userModal) userModal.classList.remove('open');
+    updateUserNav();
+    showToast('Anda telah keluar dari akun.');
+    fetchAllData();
+    openAuthModal();
+  } catch (err) {
+    console.error('Gagal keluar:', err);
+  }
+};
+
 function initModals() {
   const challModal = document.getElementById('challenge-modal');
   const btnCloseModal = document.getElementById('btn-close-modal');
@@ -565,10 +691,26 @@ function initModals() {
     });
   }
 
+  const authModal = document.getElementById('auth-modal');
+  const btnLoginTrigger = document.getElementById('btn-login-trigger');
+  const btnCloseAuth = document.getElementById('btn-close-auth-modal');
+
+  if (btnLoginTrigger) {
+    btnLoginTrigger.addEventListener('click', () => {
+      openAuthModal();
+    });
+  }
+  if (btnCloseAuth && authModal) {
+    btnCloseAuth.addEventListener('click', () => {
+      closeAuthModal();
+    });
+  }
+
   // Tutup modal ketika backdrop diklik
   window.addEventListener('click', (e) => {
     if (e.target === challModal) challModal.classList.remove('open');
     if (e.target === userModal) userModal.classList.remove('open');
+    if (e.target === authModal) closeAuthModal();
   });
 
   // Toggle Hint (Petunjuk)
@@ -657,23 +799,40 @@ function openChallengeModal(challengeId) {
 // Modal Pemilihan Akun
 async function openUserModal() {
   try {
+    const activeSummary = document.getElementById('modal-active-user-card');
+    if (activeSummary && state.currentUser) {
+      activeSummary.innerHTML = `
+        <div class="active-user-box">
+          <div class="active-user-avatar">${escapeHtml(state.currentUser.username.substring(0, 2).toUpperCase())}</div>
+          <div class="active-user-details">
+            <div class="active-user-title">${escapeHtml(state.currentUser.username)}</div>
+            <div class="active-user-sub">${escapeHtml(state.currentUser.name || state.currentUser.affiliation || 'Peserta Mandiri')}</div>
+          </div>
+        </div>
+      `;
+    }
+
     const res = await fetch('/api/users');
     const users = await res.json();
     const list = document.getElementById('user-selection-list');
-    if (!list) return;
-
-    list.innerHTML = users.map(u => {
-      const isCur = state.currentUser && state.currentUser.id === u.id;
-      return `
-        <button class="user-item-btn ${isCur ? 'active' : ''}" onclick="switchUser('${u.id}')">
-          <div>
-            <strong>${escapeHtml(u.username)}</strong>
-            <div style="font-size: 0.75rem; color: #94a3b8;">${escapeHtml(u.affiliation || 'Peserta Mandiri')}</div>
-          </div>
-          <div>${isCur ? '✓ Sedang Aktif' : 'Pilih Akun'}</div>
-        </button>
-      `;
-    }).join('');
+    if (list) {
+      if (users.length === 0) {
+        list.innerHTML = `<div style="text-align: center; color: var(--text-dim); padding: 1rem;">Belum ada peserta lain terdaftar.</div>`;
+      } else {
+        list.innerHTML = users.map(u => {
+          const isCur = state.currentUser && state.currentUser.id === u.id;
+          return `
+            <button class="user-item-btn ${isCur ? 'active' : ''}" onclick="switchUser('${u.id}')">
+              <div>
+                <strong>${escapeHtml(u.username)}</strong>
+                <div style="font-size: 0.75rem; color: #94a3b8;">${escapeHtml(u.affiliation || 'Peserta Mandiri')}</div>
+              </div>
+              <div>${isCur ? '✓ Sedang Aktif' : 'Pilih Akun'}</div>
+            </button>
+          `;
+        }).join('');
+      }
+    }
 
     document.getElementById('user-modal').classList.add('open');
   } catch (err) {
@@ -701,7 +860,7 @@ async function switchUser(userId) {
 }
 
 // ===================================================================
-// PENGIRIMAN FORM (SUBMIT FLAG & DAFTAR USER)
+// PENGIRIMAN FORM (SUBMIT FLAG & AUTH)
 // ===================================================================
 function initForms() {
   // Form Submit Flag
@@ -710,6 +869,12 @@ function initForms() {
     formSubmit.addEventListener('submit', async (e) => {
       e.preventDefault();
       if (!state.selectedChallenge) return;
+
+      if (!state.currentUser) {
+        showToast('Silakan masuk atau daftar akun terlebih dahulu!');
+        openAuthModal();
+        return;
+      }
 
       const flagInput = document.getElementById('input-flag');
       const flagVal = flagInput.value.trim();
@@ -758,37 +923,88 @@ function initForms() {
     });
   }
 
-  // Form Buat Peserta Baru
-  const formCreateUser = document.getElementById('form-create-user');
-  if (formCreateUser) {
-    formCreateUser.addEventListener('submit', async (e) => {
+  // Form Auth: Daftar Baru
+  const formAuthReg = document.getElementById('form-auth-reg');
+  if (formAuthReg) {
+    formAuthReg.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const usernameInput = document.getElementById('new-username');
-      const affilInput = document.getElementById('new-affiliation');
+      const usernameInput = document.getElementById('auth-reg-user');
+      const nameInput = document.getElementById('auth-reg-name');
+      const affilInput = document.getElementById('auth-reg-affil');
+      const errBox = document.getElementById('auth-error-box');
 
       try {
         const res = await fetch('/api/user/create', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            username: usernameInput.value,
-            affiliation: affilInput.value
+            username: usernameInput.value.trim(),
+            name: nameInput.value.trim(),
+            affiliation: affilInput.value.trim()
           })
         });
 
         const data = await res.json();
         if (data.success) {
           state.currentUser = data.user;
-          document.getElementById('user-modal').classList.remove('open');
-          showToast(`Akun berhasil dibuat: ${data.user.username}`);
+          closeAuthModal();
+          updateUserNav();
+          showToast(`Selamat datang di CyberStrike, ${data.user.username}!`);
           usernameInput.value = '';
+          nameInput.value = '';
           affilInput.value = '';
           fetchAllData();
         } else {
-          alert(data.error || 'Gagal membuat akun');
+          if (errBox) {
+            errBox.style.display = 'block';
+            errBox.textContent = data.error || 'Gagal mendaftarkan akun.';
+          }
         }
       } catch (err) {
-        alert('Kesalahan saat mendaftarkan akun');
+        if (errBox) {
+          errBox.style.display = 'block';
+          errBox.textContent = 'Terjadi kesalahan jaringan.';
+        }
+      }
+    });
+  }
+
+  // Form Auth: Login Username Terdaftar
+  const formAuthLogin = document.getElementById('form-auth-login');
+  if (formAuthLogin) {
+    formAuthLogin.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const loginUser = document.getElementById('auth-login-user');
+      const errBox = document.getElementById('auth-error-box');
+
+      try {
+        const res = await fetch('/api/user/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username: loginUser.value.trim()
+          })
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          state.currentUser = data.user;
+          closeAuthModal();
+          updateUserNav();
+          showToast(`Berhasil masuk kembali sebagai ${data.user.username}!`);
+          loginUser.value = '';
+          fetchAllData();
+        } else {
+          if (errBox) {
+            errBox.style.display = 'block';
+            errBox.textContent = data.error || 'Username tidak ditemukan.';
+          }
+        }
+      } catch (err) {
+        if (errBox) {
+          errBox.style.display = 'block';
+          errBox.textContent = 'Terjadi kesalahan jaringan.';
+        }
       }
     });
   }

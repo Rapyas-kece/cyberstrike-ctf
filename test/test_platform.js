@@ -197,9 +197,22 @@ async function runCTFTestSuite() {
   }
 
   try {
-    // /api/me
+    // /api/me (Unauthenticated visit on first landing)
     const meRes = await request({ hostname: 'localhost', port: 3099, path: '/api/me', method: 'GET' });
     assert(meRes.status === 200, 'GET /api/me returns 200 OK');
+    const meData = JSON.parse(meRes.body);
+    assert(meData.user === null, 'Unauthenticated visitor does not default to player1 (user is null)');
+
+    // Unauthenticated flag submission rejected with 401
+    const anonSub = JSON.stringify({ challengeId: 'crypto-1', flag: 'CTF{test}' });
+    const anonRes = await request({
+      hostname: 'localhost',
+      port: 3099,
+      path: '/api/submit',
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(anonSub) }
+    }, anonSub);
+    assert(anonRes.status === 401, 'Unauthenticated submission safely blocked with 401 Unauthorized');
 
     // /api/challenges
     const chRes = await request({ hostname: 'localhost', port: 3099, path: '/api/challenges', method: 'GET' });
@@ -311,6 +324,30 @@ async function runCTFTestSuite() {
       headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(goodSub), 'Cookie': authCookie }
     }, goodSub);
     assert(JSON.parse(dupRes.body).success === false, 'Duplicate challenge solve blocked');
+
+    // Logout flow
+    const logoutRes = await request({
+      hostname: 'localhost',
+      port: 3099,
+      path: '/api/user/logout',
+      method: 'POST',
+      headers: { 'Cookie': authCookie }
+    });
+    assert(logoutRes.status === 200, 'POST /api/user/logout succeeds (200 OK)');
+
+    // Login with existing username
+    const botUserObj = JSON.parse(newUserPayload);
+    const loginPayload = JSON.stringify({ username: botUserObj.username });
+    const loginRes = await request({
+      hostname: 'localhost',
+      port: 3099,
+      path: '/api/user/login',
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(loginPayload) }
+    }, loginPayload);
+    assert(loginRes.status === 200, 'POST /api/user/login succeeds with registered username');
+    const loginData = JSON.parse(loginRes.body);
+    assert(loginData.user && loginData.user.username === botUserObj.username, 'Logged in user data matches');
 
   } finally {
     srv.kill();

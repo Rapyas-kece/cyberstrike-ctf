@@ -58,15 +58,19 @@
       </nav>
 
       <!-- User Profile & Switcher Control -->
-      <div class="user-control">
-        <div class="current-user-card" id="btn-user-modal">
-          <div class="user-avatar" id="nav-user-avatar">P1</div>
+      <div class="user-control" id="nav-user-control">
+        <div class="current-user-card" id="btn-user-modal" style="display: none;">
+          <div class="user-avatar" id="nav-user-avatar">?</div>
           <div class="user-info">
-            <span class="user-label">Peserta Aktif:</span>
-            <span class="user-name" id="nav-user-name">player1</span>
+            <span class="user-label">Peserta:</span>
+            <span class="user-name" id="nav-user-name">-</span>
           </div>
           <div class="user-score-chip" id="nav-user-score">0 poin</div>
         </div>
+        <button class="btn-login-nav" id="btn-login-trigger" style="display: none;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+          <span>Masuk / Daftar</span>
+        </button>
       </div>
     </div>
   </header>
@@ -277,30 +281,94 @@
     </div>
   </div>
 
+  <!-- MODAL: Full-Screen Authentication (Login / Register) -->
+  <div class="modal-backdrop" id="auth-modal">
+    <div class="modal-box modal-auth">
+      <div class="auth-header">
+        <div class="auth-logo-badge">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <h2>Masuk ke Arena CTF</h2>
+        <p class="auth-subtitle">Daftarkan identitas hacker atau tim kamu untuk mulai memecahkan tantangan dan bersaing di papan peringkat.</p>
+      </div>
+
+      <div class="auth-tab-switch">
+        <button class="auth-tab active" id="btn-tab-reg" type="button" onclick="setAuthTab('reg')">
+          Daftar Akun Baru
+        </button>
+        <button class="auth-tab" id="btn-tab-login" type="button" onclick="setAuthTab('login')">
+          Masuk dengan Username
+        </button>
+      </div>
+
+      <!-- Form 1: Daftar Baru -->
+      <form id="form-auth-reg" class="auth-form-body">
+        <div class="form-group">
+          <label for="auth-reg-user">Username / Hacker Handle <span class="text-danger">*</span></label>
+          <input type="text" id="auth-reg-user" placeholder="Contoh: cyber_ninja atau tim_garuda" required minlength="3" autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label for="auth-reg-name">Nama Lengkap / Nama Tim (Opsional)</label>
+          <input type="text" id="auth-reg-name" placeholder="Contoh: Tim Alpha / Budi Pratama" autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label for="auth-reg-affil">Asal Sekolah / Kampus / Komunitas (Opsional)</label>
+          <input type="text" id="auth-reg-affil" placeholder="Contoh: SMK 1 Cyber / IT Club" autocomplete="off">
+        </div>
+
+        <button type="submit" class="btn-primary full-width" id="btn-auth-reg-submit" style="margin-top: 0.5rem; padding: 0.85rem;">
+          🚀 Masuk ke Arena CTF
+        </button>
+        <p class="auth-foot-note">
+          💡 <em>Akun langsung tersimpan di peramban perangkat ini. Anda tidak perlu login ulang saat membuka kembali.</em>
+        </p>
+      </form>
+
+      <!-- Form 2: Login Username Terdaftar -->
+      <form id="form-auth-login" class="auth-form-body" style="display: none;">
+        <div class="form-group">
+          <label for="auth-login-user">Username Terdaftar <span class="text-danger">*</span></label>
+          <input type="text" id="auth-login-user" placeholder="Masukkan username Anda..." required autocomplete="off">
+        </div>
+
+        <button type="submit" class="btn-primary full-width" id="btn-auth-login-submit" style="margin-top: 0.5rem; padding: 0.85rem;">
+          🔓 Masuk Kembali
+        </button>
+        <p class="auth-foot-note">
+          Gunakan username yang sudah pernah Anda daftarkan di platform ini.
+        </p>
+      </form>
+
+      <div class="auth-error-alert" id="auth-error-box" style="display: none;"></div>
+    </div>
+  </div>
+
   <!-- MODAL: User Profile / Switcher -->
   <div class="modal-backdrop" id="user-modal">
     <div class="modal-box modal-sm">
       <button class="modal-close" id="btn-close-user-modal">&times;</button>
       <div class="modal-header">
-        <h2>Pilih Profil / Ganti Peserta</h2>
+        <h2>Profil & Ganti Akun</h2>
         <p style="font-size: 0.85rem; color: #94a3b8; margin-top: 0.25rem;">
-          Ganti akun untuk mencoba pengiriman flag dan melihat skor dari sudut pandang peserta yang berbeda.
+          Kelola sesi Anda atau beralih ke profil peserta lain.
         </p>
       </div>
       <div class="modal-body">
-        <div class="user-select-list" id="user-selection-list">
+        <div id="modal-active-user-card" class="active-user-summary">
           <!-- Rendered via JS -->
         </div>
 
-        <div class="divider-text"><span>Atau Daftarkan Peserta Baru</span></div>
+        <button type="button" class="btn-logout full-width" id="btn-logout" onclick="logoutUser()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Keluar / Ganti Akun Lain
+        </button>
 
-        <form id="form-create-user">
-          <input type="text" id="new-username" placeholder="Nama Peserta (misal: tim_garuda)" required>
-          <input type="text" id="new-affiliation" placeholder="Afiliasi / Komunitas (opsional)">
-          <button type="submit" class="btn-primary full-width" style="margin-top: 0.5rem;">
-            Daftar & Masuk
-          </button>
-        </form>
+        <div class="divider-text"><span>Daftar Peserta Terdaftar</span></div>
+        <div class="user-select-list" id="user-selection-list">
+          <!-- Rendered via JS -->
+        </div>
       </div>
     </div>
   </div>

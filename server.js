@@ -12,6 +12,9 @@ const forensicsChallengeRoutes = require('./challenges/forensicsRoutes');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Trust proxy for reverse proxies like Cloudflare Tunnel
+app.set('trust proxy', 1);
+
 // Security Middlewares
 app.use(helmet({
   contentSecurityPolicy: false, // Allows Chart.js and CDN Google Fonts smoothly
@@ -28,8 +31,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Rate Limiter for Flag Submission (Security against brute-force)
 const submitLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
-  max: 30, // max 30 submissions per minute per IP
-  message: { success: false, message: 'Too many flag submissions! Please wait 1 minute.' }
+  max: 60, // max 60 submissions per minute per IP
+  validate: { xForwardedForHeader: false },
+  message: { success: false, message: 'Terlalu banyak percobaan pengiriman flag! Harap tunggu sebentar.' }
 });
 
 // Paths to persistence data files
@@ -60,15 +64,16 @@ function writeJSON(filePath, data) {
   }
 }
 
-// Middleware: Get current active user from cookie or default to player1
+// Middleware: Get current active user from cookie if set
 app.use((req, res, next) => {
-  const currentUserId = req.cookies['ctf_user_id'] || 'u-player1';
-  const users = readJSON(USERS_FILE);
-  let user = users.find(u => u.id === currentUserId);
-  if (!user && users.length > 0) {
-    user = users[0];
+  const currentUserId = req.cookies['ctf_user_id'];
+  if (currentUserId) {
+    const users = readJSON(USERS_FILE);
+    const user = users.find(u => u.id === currentUserId);
+    req.currentUser = user || null;
+  } else {
+    req.currentUser = null;
   }
-  req.currentUser = user || { id: 'u-player1', username: 'player1', name: 'Player 1' };
   next();
 });
 
@@ -106,7 +111,7 @@ app.get('/api/me', (req, res) => {
   });
 });
 
-// 2. Switch or create user
+// 2. Switch, login, logout, or create user
 app.post('/api/user/switch', (req, res) => {
   const { userId } = req.body;
   const users = readJSON(USERS_FILE);
@@ -114,33 +119,53 @@ app.post('/api/user/switch', (req, res) => {
   if (!found) {
     return res.status(404).json({ error: 'User not found' });
   }
-  res.cookie('ctf_user_id', found.id, { path: '/', maxAge: 30 * 24 * 3600 * 1000 });
+  res.cookie('ctf_user_id', found.id, { path: '/', maxAge: 365 * 24 * 3600 * 1000 });
   res.json({ success: true, user: found });
+});
+
+app.post('/api/user/login', (req, res) => {
+  const { username } = req.body;
+  if (!username || !username.trim()) {
+    return res.status(400).json({ error: 'Username wajib diisi' });
+  }
+  const users = readJSON(USERS_FILE);
+  const found = users.find(u => u.username.toLowerCase() === username.trim().toLowerCase());
+  if (!found) {
+    return res.status(404).json({ error: 'Username belum terdaftar! Silakan buat akun baru.' });
+  }
+  res.cookie('ctf_user_id', found.id, { path: '/', maxAge: 365 * 24 * 3600 * 1000 });
+  res.json({ success: true, user: found });
+});
+
+app.post('/api/user/logout', (req, res) => {
+  res.clearCookie('ctf_user_id', { path: '/' });
+  res.json({ success: true });
 });
 
 app.post('/api/user/create', (req, res) => {
   const { username, name, affiliation } = req.body;
   if (!username || username.trim().length < 3) {
-    return res.status(400).json({ error: 'Username must be at least 3 characters' });
+    return res.status(400).json({ error: 'Username minimal 3 karakter' });
   }
   const users = readJSON(USERS_FILE);
   const exists = users.some(u => u.username.toLowerCase() === username.trim().toLowerCase());
   if (exists) {
-    return res.status(409).json({ error: 'Username is already taken' });
+    return res.status(409).json({ error: 'Username sudah digunakan, pilih username lain atau login' });
   }
 
+  const cleanUser = username.trim().replace(/[^a-zA-Z0-9_-]/g, '');
   const newUser = {
     id: 'u-' + Date.now().toString(36),
-    username: username.trim().replace(/[^a-zA-Z0-9_-]/g, ''),
-    name: (name || username).trim(),
-    affiliation: (affiliation || 'Independent Operative').trim(),
+    username: cleanUser || username.trim(),
+    name: (name || cleanUser || username).trim(),
+    affiliation: (affiliation || 'Peserta Mandiri').trim(),
     country: 'ID'
   };
 
   users.push(newUser);
   writeJSON(USERS_FILE, users);
 
-  res.cookie('ctf_user_id', newUser.id, { path: '/', maxAge: 30 * 24 * 3600 * 1000 });
+  res.cookie('ctf_user_id', newUser.id, { path: '/', maxAge: 365 * 24 * 3600 * 1000 });
   res.json({ success: true, user: newUser });
 });
 
@@ -153,7 +178,7 @@ app.get('/api/users', (req, res) => {
 app.get('/api/challenges', (req, res) => {
   const challenges = readJSON(CHALLENGES_FILE);
   const solves = readJSON(SOLVES_FILE);
-  const currentUserId = req.currentUser.id;
+  const currentUserId = req.currentUser ? req.currentUser.id : null;
 
   const sanitized = challenges.map(ch => {
     const chSolves = solves.filter(s => s.challengeId === ch.id);
@@ -185,6 +210,10 @@ app.get('/api/challenges', (req, res) => {
 app.post('/api/submit', submitLimiter, (req, res) => {
   const { challengeId, flag } = req.body;
   const user = req.currentUser;
+
+  if (!user) {
+    return res.status(401).json({ success: false, message: 'Anda belum masuk! Silakan daftarkan akun terlebih dahulu.' });
+  }
 
   if (!challengeId || !flag) {
     return res.status(400).json({ success: false, message: 'ID tantangan dan flag wajib diisi' });

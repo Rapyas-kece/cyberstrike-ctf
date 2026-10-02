@@ -1,1 +1,23 @@
-[]
+[
+  {
+    "id": "u-mupjow6w",
+    "username": "yasmine",
+    "name": "yasmine",
+    "affiliation": "Peserta Mandiri",
+    "country": "ID"
+  },
+  {
+    "id": "u-mupkudbx",
+    "username": "bencihacker",
+    "name": "ravidya satrio adi",
+    "affiliation": "smkn8",
+    "country": "ID"
+  },
+  {
+    "id": "u-mupkxh3v",
+    "username": "rap",
+    "name": "rap",
+    "affiliation": "rap",
+    "country": "ID"
+  }
+]

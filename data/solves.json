@@ -1,1 +1,13 @@
-[]
+[
+  {
+    "id": "s-mupkxi9u",
+    "userId": "u-mupkxh3v",
+    "username": "rap",
+    "challengeId": "crypto-2",
+    "challengeTitle": "Enkripsi Tiga Lapis",
+    "category": "Cryptography",
+    "points": 150,
+    "timestamp": 1790861890242,
+    "isFirstBlood": true
+  }
+]

@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CyberStrike CTF 2026 - Kisi-Kisi & Panduan Silabus Kompetisi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0e17;
+      --card-bg: rgba(19, 26, 42, 0.85);
+      --card-border: rgba(48, 54, 61, 0.7);
+      --cyan: #00e5ff;
+      --green: #00e699;
+      --purple: #a855f7;
+      --gold: #f5a623;
+      --text: #f0f6fc;
+      --muted: #8b949e;
+      --radius: 14px;
+      --glow-cyan: 0 0 25px rgba(0, 229, 255, 0.25);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: radial-gradient(circle at 10% 20%, #111827 0%, #06090e 100%);
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Bar */
+    header {
+      height: 60px;
+      background: rgba(10, 14, 23, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-badge {
+      background: linear-gradient(135deg, var(--cyan), #3b82f6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-download {
+      background: linear-gradient(135deg, rgba(0, 229, 255, 0.15), rgba(59, 130, 246, 0.15));
+      border: 1px solid var(--cyan);
+      color: var(--cyan);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-download:hover {
+      background: var(--cyan);
+      color: #06090e;
+      box-shadow: var(--glow-cyan);
+      transform: translateY(-1px);
+    }
+
+    /* Main Presentation Container */
+    main {
+      flex: 1;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      width: min(1200px, 94vw);
+      height: min(680px, 82vh);
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      padding: 36px 44px;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.96) translateY(20px);
+      transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .slide.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: scale(1) translateY(0);
+    }
+
+    /* Slide Header */
+    .slide-badge {
+      display: inline-block;
+      align-self: flex-start;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 8px;
+      border: 1px solid;
+    }
+
+    .badge-cyan { color: var(--cyan); border-color: rgba(0, 229, 255, 0.4); background: rgba(0, 229, 255, 0.08); }
+    .badge-purple { color: var(--purple); border-color: rgba(168, 85, 247, 0.4); background: rgba(168, 85, 247, 0.08); }
+    .badge-green { color: var(--green); border-color: rgba(0, 230, 153, 0.4); background: rgba(0, 230, 153, 0.08); }
+    .badge-gold { color: var(--gold); border-color: rgba(245, 166, 35, 0.4); background: rgba(245, 166, 35, 0.08); }
+
+    .slide-title {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 20px;
+      line-height: 1.25;
+      border-bottom: 1px solid rgba(48, 54, 61, 0.5);
+      padding-bottom: 14px;
+    }
+
+    /* Slide Content Layouts */
+    .content-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .content-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .info-card {
+      background: rgba(13, 17, 23, 0.65);
+      border: 1px solid rgba(48, 54, 61, 0.7);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .info-card h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .info-card .card-subtitle {
+      font-size: 0.8rem;
+      color: var(--gold);
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .item-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 0.92rem;
+      line-height: 1.45;
+    }
+
+    .item-list li strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .item-list li span {
+      color: var(--muted);
+    }
+
+    /* Hero Slide (Slide 1) */
+    .hero-slide {
+      justify-content: center;
+      align-items: flex-start;
+      padding: 60px 80px;
+    }
+
+    .hero-slide h1 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 14px;
+      background: linear-gradient(135deg, #ffffff 60%, var(--cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-slide .subtitle {
+      font-size: 1.25rem;
+      color: var(--muted);
+      margin-bottom: 24px;
+      max-width: 800px;
+      line-height: 1.5;
+    }
+
+    .hero-domains {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .domain-tag {
+      background: rgba(22, 27, 34, 0.8);
+      border: 1px solid var(--card-border);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .hero-footer-note {
+      background: rgba(13, 17, 23, 0.8);
+      border-left: 4px solid var(--cyan);
+      padding: 14px 20px;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.88rem;
+      color: var(--muted);
+      max-width: 850px;
+    }
+
+    /* Bottom Navigation Bar */
+    footer {
+      height: 70px;
+      background: rgba(10, 14, 23, 0.95);
+      border-top: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      z-index: 100;
+    }
+
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .btn-nav {
+      background: rgba(22, 27, 34, 0.9);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: all 0.2s ease;
+    }
+
+    .btn-nav:hover:not(:disabled) {
+      background: var(--cyan);
+      color: #06090e;
+      border-color: var(--cyan);
+      box-shadow: var(--glow-cyan);
+    }
+
+    .btn-nav:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .slide-counter {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.95rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .slide-counter span {
+      color: var(--cyan);
+    }
+
+    .progress-bar-container {
+      flex: 1;
+      max-width: 400px;
+      height: 6px;
+      background: rgba(48, 54, 61, 0.4);
+      border-radius: 3px;
+      overflow: hidden;
+      margin: 0 24px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--cyan), var(--green));
+      width: 6.66%;
+      transition: width 0.3s ease;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 900px) {
+      .content-grid-2, .content-grid-3 {
+        grid-template-columns: 1fr;
+      }
+      .slide {
+        padding: 24px;
+        height: 85vh;
+      }
+      .slide-title {
+        font-size: 1.35rem;
+      }
+      .hero-slide h1 {
+        font-size: 1.8rem;
+      }
+      .progress-bar-container {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <span>🛡️</span>
+      <span class="brand-badge">CYBERSTRIKE CTF</span>
+      <span style="color: var(--muted); font-size: 0.85rem; font-weight: normal;">| Kisi-Kisi Presentasi Resmi</span>
+    </div>
+    <div class="top-actions">
+      <a href="/downloads/KISI_KISI_CYBERSTRIKE_CTF.pptx" class="btn-download" download>
+        <span>📥</span> Unduh Berkas .PPTX (PowerPoint)
+      </a>
+      <a href="/downloads/KISI_KISI_KOMPETISI.md" class="btn-download" style="border-color: var(--muted); color: var(--muted);" target="_blank">
+        <span>📄</span> Dokumen Markdown
+      </a>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- SLIDE 1: COVER -->
+    <div class="slide hero-slide active" data-index="1">
+      <div class="slide-badge badge-cyan">KISI-KISI RESMI 2026</div>
+      <h1>CYBERSTRIKE CTF 2026</h1>
+      <div class="subtitle">
+        Pedoman Materi, Arah Belajar & Toolkit Investigasi (Panduan Konseptual Tanpa Bocoran / Zero-Spoiler).
+      </div>
+      <div class="hero-domains">
+        <div class="domain-tag" style="color: var(--cyan); border-color: rgba(0, 229, 255, 0.4);">🌐 Web Exploitation</div>
+        <div class="domain-tag" style="color: var(--purple); border-color: rgba(168, 85, 247, 0.4);">🔐 Cryptography</div>
+        <div class="domain-tag" style="color: var(--green); border-color: rgba(0, 230, 153, 0.4);">🔍 Digital Forensics</div>
+      </div>
+      <div class="hero-footer-note">
+        <strong>📌 Catatan Resmi Panitia:</strong> Dokumen kisi-kisi ini berfokus pada fondasi teori, logika analitis, dan instrumen keamanan siber. Tidak ada jawaban instan maupun bocoran flag (CTF{...}). Kejujuran & kemampuan riset mandiri adalah nilai utama kompetisi.
+      </div>
+    </div>
+
+    <!-- SLIDE 2: MINDSET -->
+    <div class="slide" data-index="2">
+      <div class="slide-badge badge-cyan">PENDAHULUAN</div>
+      <div class="slide-title">Tujuan Pembelajaran & Pola Pikir Kompetisi (Mindset)</div>
+      <div class="content-grid-3">
+        <div class="info-card">
+          <div class="card-subtitle">PRINSIP UTAMA</div>
+          <h3 style="color: var(--cyan);">💡 Filosofi Kompetisi</h3>
+          <ul class="item-list">
+            <li><strong>Bukan Tebak-Tebakan:</strong> <span>CTF dirancang dengan alur logika terstruktur dan berbasis dasar ilmiah komputer.</span></li>
+            <li><strong>Simulasi Nyata:</strong> <span>Mengasah kemampuan audit keamanan web, analisis sandi, dan rekonstruksi barang bukti digital.</span></li>
+            <li><strong>Kemandirian:</strong> <span>Peserta ditantang untuk mencari solusi melalui riset dokumentasi dan alat investigasi.</span></li>
+          </ul>
+        </div>
+        <div class="info-card">
+          <div class="card-subtitle">METODOLOGI</div>
+          <h3 style="color: var(--purple);">🧠 Pola Pikir Investigasi</h3>
+          <ul class="item-list">
+            <li><strong>Pahami Arsitektur:</strong> <span>Ketahui bagaimana protokol atau struktur file bekerja normal sebelum mencari kelemahannya.</span></li>
+            <li><strong>Observasi Anomali:</strong> <span>Perhatikan header tak lazim, ukuran berkas janggal, atau karakter teks yang berpola tertentu.</span></li>
+            <li><strong>Formulasi Hipotesis:</strong> <span>Susun hipotesis terukur (misal: 'Apakah ini format Base64?') lalu uji dengan alat yang tepat.</span></li>
+          </ul>
+        </div>
+        <div class="info-card">
+          <div class="card-subtitle">KETENTUAN RESMI</div>
+          <h3 style="color: var(--green);">🚩 Format Jawaban Flag</h3>
+          <ul class="item-list">
+            <li><strong>Format Baku:</strong> <span>Seluruh jawaban flag wajib diawali <code>CTF{</code> dan diakhiri tanda kurung <code>}</code>.</span></li>
+            <li><strong>Sensitif Huruf:</strong> <span>Flag bersifat case-sensitive. Hindari spasi kosong di awal atau akhir string.</span></li>
+            <li><strong>Proteksi Rate-Limit:</strong> <span>Penyerahan flag diverifikasi otomatis oleh server dengan perlindungan anti brute-force.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3: DISTRIBUSI -->
+    <div class="slide" data-index="3">
+      <div class="slide-badge badge-gold">STRUKTUR KOMPETISI</div>
+      <div class="slide-title">Struktur & Distribusi 12 Tantangan CyberStrike CTF</div>
+      <div class="content-grid-3">
+        <div class="info-card">
+          <div class="card-subtitle">4 SOAL | TOTAL 700 POIN</div>
+          <h3 style="color: var(--cyan);">🌐 Web Exploitation</h3>
+          <ul class="item-list">
+            <li><strong>Web 1 (100 Poin):</strong> <span>Inspeksi Header & Komentar Klien</span></li>
+            <li><strong>Web 2 (150 Poin):</strong> <span>Direktif Robot & Jalur Tersembunyi</span></li>
+            <li><strong>Web 3 (200 Poin):</strong> <span>Otorisasi & Manipulasi Cookie Sesi</span></li>
+            <li><strong>Web 4 (250 Poin):</strong> <span>Logika Otentikasi & Query Database</span></li>
+          </ul>
+        </div>
+        <div class="info-card">
+          <div class="card-subtitle">4 SOAL | TOTAL 700 POIN</div>
+          <h3 style="color: var(--purple);">🔐 Cryptography</h3>
+          <ul class="item-list">
+            <li><strong>Crypto 1 (100 Poin):</strong> <span>Sandi Pergeseran Alfabet Romawi</span></li>
+            <li><strong>Crypto 2 (150 Poin):</strong> <span>Rantai Transformasi Encoding Multi-Format</span></li>
+            <li><strong>Crypto 3 (200 Poin):</strong> <span>Aljabar Bitwise XOR Ruang Kunci 8-bit</span></li>
+            <li><strong>Crypto 4 (250 Poin):</strong> <span>Sandi Substitusi Polialfabetik Vigenère</span></li>
+          </ul>
+        </div>
+        <div class="info-card">
+          <div class="card-subtitle">4 SOAL | TOTAL 700 POIN</div>
+          <h3 style="color: var(--green);">🔍 Digital Forensics</h3>
+          <ul class="item-list">
+            <li><strong>Forensik 1 (100 Poin):</strong> <span>Eksplorasi Metadata Berkas Citra (EXIF)</span></li>
+            <li><strong>Forensik 2 (150 Poin):</strong> <span>Integritas Biner & Perbaikan Magic Bytes</span></li>
+            <li><strong>Forensik 3 (200 Poin):</strong> <span>Steganografi Penanda Akhir Berkas (EOF)</span></li>
+            <li><strong>Forensik 4 (250 Poin):</strong> <span>Analisis Penyadapan Paket Jaringan (PCAP)</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4: WEB OVERVIEW -->
+    <div class="slide" data-index="4">
+      <div class="slide-badge badge-cyan">DOMAIN 1: WEB EXPLOITATION</div>
+      <div class="slide-title">Fondasi Arsitektur Web & Vektor Analisis Klien-Server</div>
+      <div class="content-grid-2">
+        <div class="info-card">
+          <div class="card-subtitle">KOMUNIKASI KLIEN - SERVER</div>
+          <h3 style="color: var(--cyan);">📡 Permintaan & Respon HTTP</h3>
+          <ul class="item-list">
+            <li><strong>Siklus Request-Response:</strong> <span>Browser mengirim permintaan HTTP dan server merespon dengan status code, header, dan payload.</span></li>
+            <li><strong>Transmisi Header Kustom:</strong> <span>Header respon memuat metadata penting. Pengembang terkadang meletakkan info di custom header (seperti <code>X-...</code>).</span></li>
+            <li><strong>Komentar Kode Sumber:</strong> <span>Inspeksi dokumen HTML/JS sering kali mengungkap catatan teknis atau petunjuk internal developer.</span></li>
+            <li><strong>Perangkat:</strong> <span>Gunakan Browser DevTools (F12) tab Elements dan tab Network.</span></li>
+          </ul>
+        </div>
+        <div class="info-card">
+          <div class="card-subtitle">LOGIKA OTORISASI & AKSES</div>
+          <h3 style="color: #38bdf8;">🛡️ Kepercayaan Sisi Klien vs Sisi Server</h3>
+          <ul class="item-list">
+            <li><strong>Prinsip 'Never Trust Client':</strong> <span>Sistem yang aman tidak mempercayai parameter otorisasi yang dikirim langsung dari browser tanpa validasi server.</span></li>
+            <li><strong>Penyimpanan Sesi (Cookies):</strong> <span>Jika status hak akses (seperti role admin) disimpan mentah di cookie, pengguna dapat memodifikasinya.</span></li>
+            <li><strong>Perayap Web (Robots):</strong> <span>Berkas robots.txt dibuat untuk memandu bot pencari, namun bersifat publik dan dapat dibaca siapa saja.</span></li>
+            <li><strong>Integritas Kueri:</strong> <span>Masukan form harus divalidasi agar tidak membelokkan logika kueri backend.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5: WEB TOPIK 1 & 2 -->
+    <div class="slide" data-index="5">
+      <div class="slide-badge badge-cyan">WEB EXPLOITATION</div>
+      <div class="slide-title">Kisi-Kisi Topik 1 & 2: Inspeksi Transmisi & Direktif Robot</div>
+      <div class="content-grid-2">
+        <div class="info-card">
+          <div class="card-subtitle">TINGKAT DASAR | 100 POIN</div>
+          <h3 style="color: var(--cyan);">🔍 Topik 1: Inspeksi Transmisi & Header</h3>
+          <ul class="item-list">
+            <li><strong>Konsep yang Diuji:</strong> <span>Transmisi protokol HTTP di luar tampilan kanvas visual web serta komentar kode sumber klien.</span></li>
+            <li><strong>Kompetensi Peserta:</strong> <span>Mampu menavigasi kode sumber dan memeriksa response headers yang dikirimkan web server.</span></li>
+            <li><strong>Kata Kunci:</strong> <span><code>HTTP Response Headers</code>, <code>Custom Header (X-...)</code>, <code>HTML Comments</code>, <code>Network Tab</code>.</span></li>
+            <li><strong>Arah Belajar:</strong> <span>Pelajari tab Network pada DevTools browser dan cara menyaring file dokumen untuk melihat raw response.</span></li>
+          </ul>
+        </div>
+        <div class="info-card">
+          <div class="card-subtitle">TINGKAT DASAR | 150 POIN</div>
+          <h3 style="color: var(--cyan);">🤖 Topik 2: Navigasi Crawler & robots.txt</h3>
+          <ul class="item-list">
+            <li><strong>Konsep yang Diuji:</strong> <span>Standar protokol eksklusi mesin pencari (Robots Exclusion Protocol) untuk membatasi perayapan bot.</span></li>
+            <li><strong>Kompetensi Peserta:</strong> <span>Memahami bagaimana pengembang menyembunyikan jalur sistem menggunakan berkas publik robots.txt.</span></li>
+            <li><strong>Kata Kunci:</strong> <span><code>Robots.txt</code>, <code>User-agent</code>, <code>Disallow Directive</code>, <code>Hidden Path</code>, <code>Crawler</code>.</span></li>
+            <li><strong>Arah Belajar:</strong> <span>Pahami cara kerja web crawler, struktur direktif Disallow, dan penjelajahan endpoint tersembunyi.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 6: WEB TOPIK 3 & 4 -->
+    <div class="slide" data-index="6">
+      <div class="slide-badge badge-cyan">WEB EXPLOITATION</div>
+      <div class="slide-title">Kisi-Kisi Topik 3 & 4: Manajemen Sesi & Logika Otentikasi</div>
+      <div class="content-grid-2">
+        <div class="info-card">
+          <div class="card-subtitle">TINGKAT MENENGAH | 200 POIN</div>
+          <h3 style="color: var(--cyan);">🍪 Topik 3: Otorisasi & Manipulasi Cookie</h3>
+          <ul class="item-list">
+            <li><strong>Konsep yang Diuji:</strong> <span>Pengelolaan status sesi pengguna (state management) menggunakan HTTP Cookies tanpa tanda tangan kriptografi.</span></li>
+            <li><strong>Kompetensi Peserta:</strong> <span>Mengenali variabel kontrol hak akses pada browser storage dan mengubah nilainya untuk menaikkan privilege.</span></li>
+            <li><strong>Kata Kunci:</strong> <span><code>HTTP Cookie</code>, <code>Privilege Escalation</code>, <code>Session Storage</code>, <code>Client-Side Trust</code>.</span></li>
+            <li><strong>Arah Belajar:</strong> <span>Pelajari tab Application/Storage di browser DevTools, edit nilai cookie peran, lalu refresh halaman.</span></li>
+          </ul>
+        </div>
+        <div class="info-card">
+          <div class="card-subtitle">TINGKAT MENENGAH | 250 POIN</div>
+          <h3 style="color: var(--cyan);">💉 Topik 4: Logika Integritas Otentikasi (SQL)</h3>
+          <ul class="item-list">
+            <li><strong>Konsep yang Diuji:</strong> <span>Evaluasi logika aljabar boolean pada formulir login yang terhubung ke database relasional.</span></li>
+            <li><strong>Kompetensi Peserta:</strong> <span>Menganalisis bagaimana karakter khusus memanipulasi klausa WHERE kueri sehingga selalu bernilai TRUE.</span></li>
+            <li><strong>Kata Kunci:</strong> <span><code>Boolean Tautology</code>, <code>SQL Logic Evaluation</code>, <code>Authentication Bypass</code>, <code>Quote Escape</code>.</span></li>
+            <li><strong>Arah Belajar:</strong> <span>Pahami tabel kebenaran operator OR ('TRUE OR FALSE = TRUE'), karakter petik tunggal, dan manipulasi input.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 7: CRYPTO OVERVIEW -->
+    <div class="slide" data-index="7">
+      <div class="slide-badge badge-purple">DOMAIN 2: CRYPTOGRAPHY</div>
+      <div class="slide-title">Fondasi Kriptografi: Representasi Data vs Kriptosistem</div>
+      <div class="content-grid-2">
+        <div class="info-card">
+          <div class="card-subtitle">FONDASI TEORITIS DATA</div>
+          <h3 style="color: var(--purple);">🔄 Encoding vs Enkripsi</h3>
+          <ul class="item-list">
+            <li><strong>Encoding (Penyandian Format):</strong> <span>Mengubah format data agar aman ditransmisikan. TIDAK memerlukan kunci rahasia. Bersifat publik & reversibel sepenuhnya.</span></li>
+            <li><strong>Contoh Encoding:</strong> <span>Biner (Base-2), Heksadesimal (Base-16), Base64 (pemetaan 6-bit).</span></li>
+            <li><strong>Enkripsi (Pengamanan Rahasia):</strong> <span>Mengacak plaintext menjadi ciphertext dengan kunci rahasia tertentu. Hanya pemegang kunci yang dapat mendekripsinya.</span></li>
+            <li><strong>Kriptosistem:</strong> <span>Sandi klasik (substitusi/transposisi), operasi bitwise (XOR), dan polialfabetik.</span></li>
+          </ul>
+        </div>
+        <div class="info-card">
+          <div class="card-subtitle">METODE PEMECAHAN LOGIKA</div>
+          <h3 style="color: #38bdf8;">🧩 Karakteristik Ciphertext & Analisis</h3>
+          <ul class="item-list">
+            <li><strong>Kenali Ciri Teks Sandi:</strong> <span>Sandi pergeseran alfabet mempertahankan panjang kata. Hex hanya memuat 0-9 & A-F. Base64 sering diakhiri padding '='.</span></li>
+            <li><strong>Sifat Simetri (Involutori):</strong> <span>Operasi seperti ROT13 dan gerbang logika XOR memiliki proses dekripsi yang identik dengan enkripsinya.</span></li>
+            <li><strong>Ruang Kunci Terbatas:</strong> <span>Jika ukuran kunci pendek (1 byte = 256 kombinasi), pengujian menyeluruh (brute-force) sangat efektif.</span></li>
+            <li><strong>Alat:</strong> <span>CyberChef (GCHQ), script Python 3, dan dcode.fr.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 8: CRYPTO TOPIK 1 & 2 -->
+    <div class="slide" data-index="8">
+      <div class="slide-badge badge-purple">CRYPTOGRAPHY</div>
+      <div class="slide-title">Kisi-Kisi Topik 1 & 2: Sandi Pergeseran & Rantai Transformasi</div>
+      <div class="content-grid-2">
+        <div class="info-card">
+          <div class="card-subtitle">TINGKAT DASAR | 100 POIN</div>
+          <h3 style="color: var(--purple);">🏛️ Topik 1: Sandi Pergeseran Alfabet Klasik</h3>
+          <ul class="item-list">
+            <li><strong>Konsep yang Diuji:</strong> <span>Sandi substitusi monoalfabetik klasik berbasis aritmatika modulo 26 (Caesar Cipher / ROT13).</span></li>
+            <li><strong>Kompetensi Peserta:</strong> <span>Mengenali pola teks teracak yang mempertahankan tanda baca dan membalikkan pergeseran alfabet dengan interval tetap.</span></li>
+            <li><strong>Kata Kunci:</strong> <span><code>Caesar Shift</code>, <code>ROT13</code>, <code>Modulo 26</code>, <code>Monoalphabetic Substitution</code>.</span></li>
+            <li><strong>Arah Belajar:</strong> <span>Pelajari rumus matematis C = (P + K) mod 26, simetri rotasi 13 huruf, dan resep ROT di CyberChef.</span></li>
+          </ul>
+        </div>
+        <div class="info-card">
+          <div class="card-subtitle">TINGKAT DASAR | 150 POIN</div>
+          <h3 style="color: var(--purple);">⛓️ Topik 2: Rantai Transformasi Multi-Format</h3>
+          <ul class="item-list">
+            <li><strong>Konsep yang Diuji:</strong> <span>Pipelined / Layered Encoding, di mana pesan ditransformasikan melewati 3 format representasi data digital bertingkat.</span></li>
+            <li><strong>Kompetensi Peserta:</strong> <span>Mengidentifikasi pola biner 8-bit, mengonversinya ke heksadesimal, dan men-decode string Base64 secara terbalik.</span></li>
+            <li><strong>Kata Kunci:</strong> <span><code>Layered Encoding</code>, <code>Binary (Base-2)</code>, <code>Hex (Base-16)</code>, <code>Base64</code>, <code>Reverse Pipeline</code>.</span></li>
+            <li><strong>Arah Belajar:</strong> <span>Pahami konversi deret biner ke teks ASCII, fungsi tabel hex, dan cara menyusun pipeline decoding di CyberChef.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 9: CRYPTO TOPIK 3 & 4 -->
+    <div class="slide" data-index="9">
+      <div class="slide-badge badge-purple">CRYPTOGRAPHY</div>
+      <div class="slide-title">Kisi-Kisi Topik 3 & 4: Aljabar XOR & Sandi Polialfabetik</div>
+      <div class="content-grid-2">
+        <div class="info-card">
+          <div class="card-subtitle">TINGKAT MENENGAH | 200 POIN</div>
+          <h3 style="color: var(--purple);">⚡ Topik 3: Aljabar Bitwise XOR Ruang Kunci 8-Bit</h3>
+          <ul class="item-list">
+            <li><strong>Konsep yang Diuji:</strong> <span>Operasi logika Exclusive OR (XOR / ^) bita biner dengan sifat matematis involutori (A ^ K ^ K = A).</span></li>
+            <li><strong>Kompetensi Peserta:</strong> <span>Memahami enkripsi XOR bita tunggal dan menguji seluruh ruang kunci 1-byte (0 hingga 255 variasi) untuk memulihkan pesan.</span></li>
+            <li><strong>Kata Kunci:</strong> <span><code>Bitwise XOR</code>, <code>Single-Byte Key Space (256)</code>, <code>Brute Force Search</code>, <code>Involutory</code>.</span></li>
+            <li><strong>Arah Belajar:</strong> <span>Pelajari tabel kebenaran gerbang XOR, operasi XOR byte-per-byte pada Python / CyberChef 'XOR Brute Force'.</span></li>
+          </ul>
+        </div>
+        <div class="info-card">
+          <div class="card-subtitle">TINGKAT MENENGAH | 250 POIN</div>
+          <h3 style="color: var(--purple);">📖 Topik 4: Sandi Polialfabetik Vigenère</h3>
+          <ul class="item-list">
+            <li><strong>Konsep yang Diuji:</strong> <span>Sandi substitusi polialfabetik yang menggunakan kata kunci berulang (repeating keystream) untuk mengubah pergeseran tiap huruf.</span></li>
+            <li><strong>Kompetensi Peserta:</strong> <span>Mampu merekonstruksi pesan teks sandi dengan memetakan huruf sandi dan huruf kunci pada matriks Tabula Recta.</span></li>
+            <li><strong>Kata Kunci:</strong> <span><code>Vigenère Cipher</code>, <code>Tabula Recta Matrix</code>, <code>Repeating Keystream</code>, <code>Polyalphabetic</code>.</span></li>
+            <li><strong>Arah Belajar:</strong> <span>Pahami cara kerja tabel pergeseran Vigenère, rumus dekripsi P = (C - K) mod 26, dan decoding menggunakan kata kunci.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 10: FORENSICS OVERVIEW -->
+    <div class="slide" data-index="10">
+      <div class="slide-badge badge-green">DOMAIN 3: DIGITAL FORENSICS</div>
+      <div class="slide-title">Fondasi Forensik Digital: Struktur Berkas Biner & Transmisi</div>
+      <div class="content-grid-2">
+        <div class="info-card">
+          <div class="card-subtitle">STRUKTUR DATA FISIK BERKAS</div>
+          <h3 style="color: var(--green);">🔬 Anatomi Berkas Digital</h3>
+          <ul class="item-list">
+            <li><strong>Tanda Tangan Berkas (Magic Bytes):</strong> <span>Sistem operasi mengenali tipe berkas dari byte penanda awal (offset 0x00), bukan sekadar ekstensi file.</span></li>
+            <li><strong>Metadata Tersembunyi (EXIF):</strong> <span>Berkas citra menyimpan metadata otomatis (perangkat, waktu, tag komentar pengembang) di luar kanvas visual.</span></li>
+            <li><strong>Penanda Akhir Berkas (EOF):</strong> <span>Format citra memiliki penanda penutup baku. Data yang disisipkan di balik batas EOF tidak akan dirender oleh image viewer biasa.</span></li>
+            <li><strong>Integritas Bukti:</strong> <span>Selalu bekerja menggunakan salinan berkas bukti (*working copy*) agar tidak merusak artefak asli.</span></li>
+          </ul>
+        </div>
+        <div class="info-card">
+          <div class="card-subtitle">ANALISIS TRAFIK JARINGAN</div>
+          <h3 style="color: #38bdf8;">📡 Rekaman Paket Jaringan (PCAP)</h3>
+          <ul class="item-list">
+            <li><strong>Paket Transmisi Data:</strong> <span>Komunikasi jaringan dipecah ke dalam bingkai paket yang mencatat IP sumber, tujuan, port, dan payload data.</span></li>
+            <li><strong>Protokol Teks Polos (Clear-Text):</strong> <span>Protokol seperti HTTP mentransmisikan data mentah tanpa enkripsi TLS. Isi percakapan dapat dibaca oleh analis.</span></li>
+            <li><strong>Rekonstruksi Aliran Sesi (Streams):</strong> <span>Paket yang terpecah dalam transmisi TCP dapat digabungkan kembali secara utuh untuk membaca request/file yang diunduh.</span></li>
+            <li><strong>Alat:</strong> <span>Hex Editor (HxD / HexEd.it), ExifTool, 7-Zip, dan Wireshark.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 11: FORENSICS TOPIK 1 & 2 -->
+    <div class="slide" data-index="11">
+      <div class="slide-badge badge-green">DIGITAL FORENSICS</div>
+      <div class="slide-title">Kisi-Kisi Topik 1 & 2: Metadata Citra & Reparasi Magic Bytes</div>
+      <div class="content-grid-2">
+        <div class="info-card">
+          <div class="card-subtitle">TINGKAT DASAR | 100 POIN</div>
+          <h3 style="color: var(--green);">📷 Topik 1: Eksplorasi Metadata Berkas Citra</h3>
+          <ul class="item-list">
+            <li><strong>Konsep yang Diuji:</strong> <span>Penyimpanan metadata Exchangeable Image File Format (EXIF) dan tag komentar teks di dalam berkas gambar.</span></li>
+            <li><strong>Kompetensi Peserta:</strong> <span>Mampu mengekstraksi atribut informasi non-visual yang tertanam di dalam dokumen citra digital.</span></li>
+            <li><strong>Kata Kunci:</strong> <span><code>EXIF Specification</code>, <code>UserComment / XPComment</code>, <code>File Properties Details</code>, <code>Strings</code>.</span></li>
+            <li><strong>Arah Belajar:</strong> <span>Pelajari pembacaan tab Details di Properties berkas Windows, utilitas ExifTool, atau perintah terminal strings.</span></li>
+          </ul>
+        </div>
+        <div class="info-card">
+          <div class="card-subtitle">TINGKAT DASAR | 150 POIN</div>
+          <h3 style="color: var(--green);">🩹 Topik 2: Integritas Struktur Biner (Magic Bytes)</h3>
+          <ul class="item-list">
+            <li><strong>Konsep yang Diuji:</strong> <span>Kerusakan struktur tanda tangan berkas biner pada 8-byte pertama berkas gambar standar (format PNG).</span></li>
+            <li><strong>Kompetensi Peserta:</strong> <span>Mampu menggunakan Hex Editor untuk membaca byte mentah, mengidentifikasi kerusakan, dan menambal (patching) byte yang hilang.</span></li>
+            <li><strong>Kata Kunci:</strong> <span><code>Magic Bytes</code>, <code>File Signature</code>, <code>PNG Header (89 50 4E 47...)</code>, <code>Hex Patching</code>.</span></li>
+            <li><strong>Arah Belajar:</strong> <span>Pelajari spesifikasi magic bytes PNG, buka berkas di HxD atau hexed.it, perbaiki 8 byte pertama, lalu simpan file.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 12: FORENSICS TOPIK 3 & 4 -->
+    <div class="slide" data-index="12">
+      <div class="slide-badge badge-green">DIGITAL FORENSICS</div>
+      <div class="slide-title">Kisi-Kisi Topik 3 & 4: Steganografi EOF & Analisis Trafik PCAP</div>
+      <div class="content-grid-2">
+        <div class="info-card">
+          <div class="card-subtitle">TINGKAT MENENGAH | 200 POIN</div>
+          <h3 style="color: var(--green);">📦 Topik 3: Steganografi Penanda Akhir Berkas (EOF)</h3>
+          <ul class="item-list">
+            <li><strong>Konsep yang Diuji:</strong> <span>Penyembunyian kontainer berkas sekunder (seperti arsip ZIP) di balik penanda batas akhir berkas (EOF) citra JPEG.</span></li>
+            <li><strong>Kompetensi Peserta:</strong> <span>Mampu mendeteksi anomali struktur berkas di luar penanda EOF (FF D9) dan mengekstraksi arsip tersembunyi.</span></li>
+            <li><strong>Kata Kunci:</strong> <span><code>End of File (EOF)</code>, <code>JPEG Marker (FF D9)</code>, <code>Appended Steganography</code>, <code>File Carving</code>.</span></li>
+            <li><strong>Arah Belajar:</strong> <span>Pelajari batas EOF JPEG, teknik membuka file gambar langsung menggunakan pengarsip (7-Zip / WinRAR), atau tool binwalk.</span></li>
+          </ul>
+        </div>
+        <div class="info-card">
+          <div class="card-subtitle">TINGKAT MENENGAH | 250 POIN</div>
+          <h3 style="color: var(--green);">🦈 Topik 4: Analisis Lalu Lintas Jaringan (PCAP)</h3>
+          <ul class="item-list">
+            <li><strong>Konsep yang Diuji:</strong> <span>Investigasi penyadapan paket jaringan mentah untuk menganalisis transmisi data protokol teks polos (HTTP).</span></li>
+            <li><strong>Kompetensi Peserta:</strong> <span>Mampu memfilter protokol jaringan tertentu di antara ribuan paket lalu lintas dan merekonstruksi aliran sesi komunikasi (TCP Stream Reassembly).</span></li>
+            <li><strong>Kata Kunci:</strong> <span><code>Packet Capture (PCAP)</code>, <code>Display Filter 'http'</code>, <code>Follow TCP Stream</code>, <code>Clear-Text Payload</code>.</span></li>
+            <li><strong>Arah Belajar:</strong> <span>Pelajari penggunaan filter display Wireshark, fitur 'Follow -> TCP Stream', dan membaca transaksi request/response HTTP.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 13: TOOLKIT -->
+    <div class="slide" data-index="13">
+      <div class="slide-badge badge-gold">PERSIAPAN PESERTA</div>
+      <div class="slide-title">Matriks Kesiapan Perangkat Lunak (Tools Checklist)</div>
+      <div class="content-grid-3">
+        <div class="info-card">
+          <div class="card-subtitle">KOMPONEN WEB</div>
+          <h3 style="color: var(--cyan);">🌐 Perangkat Web</h3>
+          <ul class="item-list">
+            <li><strong>Browser DevTools:</strong> <span>Chrome / Firefox / Edge (F12) untuk inspeksi DOM, network response header, dan cookie.</span></li>
+            <li><strong>cURL / Postman:</strong> <span>Pengujian request HTTP kustom dan verifikasi respons endpoint.</span></li>
+            <li><strong>Proxy Opsional:</strong> <span>Burp Suite Community Edition (opsional untuk analisis lalu lintas HTTP).</span></li>
+          </ul>
+        </div>
+        <div class="info-card">
+          <div class="card-subtitle">KOMPONEN KRIPTO</div>
+          <h3 style="color: var(--purple);">🔐 Perangkat Kriptografi</h3>
+          <ul class="item-list">
+            <li><strong>CyberChef (GCHQ):</strong> <span>Tool serbaguna untuk ROT13, Base64, Hex decoding, dan XOR Brute Force.</span></li>
+            <li><strong>Python 3:</strong> <span>Scripting otomatis untuk kalkulasi bitwise, manipulasi string, dan modulo.</span></li>
+            <li><strong>dcode.fr:</strong> <span>Referensi online pengenal cipher klasik dan pemecah sandi substitusi/Vigenère.</span></li>
+          </ul>
+        </div>
+        <div class="info-card">
+          <div class="card-subtitle">KOMPONEN FORENSIK</div>
+          <h3 style="color: var(--green);">🔍 Perangkat Forensik</h3>
+          <ul class="item-list">
+            <li><strong>HxD / HexEd.it:</strong> <span>Editor heksadesimal untuk membaca biner mentah dan memperbaiki byte rusak.</span></li>
+            <li><strong>7-Zip / WinRAR:</strong> <span>Pengarsip berkas untuk mendeteksi kontainer ZIP di balik steganografi gambar.</span></li>
+            <li><strong>ExifTool / File Properties:</strong> <span>Pembaca metadata EXIF dan komentar tak kasat mata.</span></li>
+            <li><strong>Wireshark:</strong> <span>Penganalisis paket jaringan dan rekonstruksi TCP stream.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 14: STRATEGI BERTANDING -->
+    <div class="slide" data-index="14">
+      <div class="slide-badge badge-gold">STRATEGI BERTANDING</div>
+      <div class="slide-title">Panduan Efektivitas & Rekomendasi Alokasi Waktu</div>
+      <div class="content-grid-2">
+        <div class="info-card">
+          <div class="card-subtitle">MANAJEMEN WAKTU IDEAL</div>
+          <h3 style="color: var(--gold);">⏱️ 4 Fase Eksekusi Tantangan</h3>
+          <ul class="item-list">
+            <li><strong>Fase 1: Tinjauan Awal (15 Menit):</strong> <span>Buka dan baca deskripsi seluruh 12 tantangan. Tandai soal yang Anda kenali konsep dasarnya.</span></li>
+            <li><strong>Fase 2: Target Mudah (45 Menit):</strong> <span>Selesaikan soal 100 poin di tiap kategori (Web 1, Crypto 1, Forensics 1) untuk membangun kepercayaan diri.</span></li>
+            <li><strong>Fase 3: Tantangan Menengah (60-90 Menit):</strong> <span>Kerjakan soal 150 - 200 poin secara sistematis dengan alat seperti CyberChef dan Wireshark.</span></li>
+            <li><strong>Fase 4: Tantangan Bobot Tinggi (Sisa Waktu):</strong> <span>Fokus pada tantangan 250 poin yang membutuhkan pemikiran analitis lebih mendalam.</span></li>
+          </ul>
+        </div>
+        <div class="info-card">
+          <div class="card-subtitle">TIPS INVESTIGASI EFEKTIF</div>
+          <h3 style="color: #38bdf8;">💡 Menghindari Kesalahan Umum</h3>
+          <ul class="item-list">
+            <li><strong>Jangan Berspekulasi Liar:</strong> <span>Semua tantangan memiliki dasar rasional. Jika buntu, baca ulang petunjuk dan deskripsi soal.</span></li>
+            <li><strong>Jaga Format Flag:</strong> <span>Pastikan tidak ada karakter terpotong atau spasi tambahan saat menyalin flag (<code>CTF{...}</code>).</span></li>
+            <li><strong>Gunakan Berkas Salinan:</strong> <span>Saat memperbaiki byte file forensik, selalu buat berkas cadangan agar bukti asli tidak rusak permanen.</span></li>
+            <li><strong>Berpikir Seperti Pengembang:</strong> <span>Pikirkan bagaimana developer sistem membangun fitur tersebut, lalu temukan asumsi keliru mereka.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 15: CLOSING -->
+    <div class="slide hero-slide" data-index="15">
+      <div class="slide-badge badge-cyan">SELAMAT BERTANDING</div>
+      <h1 style="font-size: 2.4rem;">SELAMAT MENGIKUTI KOMPETISI!</h1>
+      <div class="subtitle" style="font-size: 1.15rem;">
+        CyberStrike CTF 2026: Mengasah Ketajaman Logika & Integritas Keamanan Siber
+      </div>
+      <div style="background: rgba(13, 17, 23, 0.7); border: 1px solid var(--card-border); border-radius: 12px; padding: 24px; max-width: 800px; margin-bottom: 24px; line-height: 1.6; color: var(--muted);">
+        "Setiap tantangan keamanan siber adalah sebuah teka-teki logika yang terstruktur.<br>
+        Fokuslah pada prinsip kerja teknologi di balik layar, amati anomali data, dan jangan ragu untuk bereksplorasi secara mandiri!"
+      </div>
+      <div style="display: flex; gap: 16px; align-items: center;">
+        <a href="/" class="btn-download" style="font-size: 1rem; padding: 10px 20px;">
+          🌐 Buka Web Platform CTF
+        </a>
+        <a href="/downloads/KISI_KISI_CYBERSTRIKE_CTF.pptx" class="btn-download" style="background: rgba(0, 230, 153, 0.15); border-color: var(--green); color: var(--green); font-size: 1rem; padding: 10px 20px;" download>
+          📥 Unduh File .PPTX (PowerPoint)
+        </a>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    <div class="nav-controls">
+      <button class="btn-nav" id="btnPrev" title="Slide Sebelumnya (Panah Kiri)">◀</button>
+      <button class="btn-nav" id="btnNext" title="Slide Berikutnya (Panah Kanan / Spasi)">▶</button>
+      <div class="slide-counter">Slide <span id="currentSlideNum">1</span> / <span id="totalSlideNum">15</span></div>
+    </div>
+
+    <div class="progress-bar-container">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div style="font-size: 0.85rem; color: var(--muted); font-family: 'JetBrains Mono', monospace;">
+      Gunakan tombol <kbd style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; color: var(--text);">◀</kbd> <kbd style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; color: var(--text);">▶</kbd> pada keyboard
+    </div>
+  </footer>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    let currentIndex = 0;
+
+    const currentSlideNum = document.getElementById('currentSlideNum');
+    const totalSlideNum = document.getElementById('totalSlideNum');
+    const progressBar = document.getElementById('progressBar');
+    const btnPrev = document.getElementById('btnPrev');
+    const btnNext = document.getElementById('btnNext');
+
+    totalSlideNum.textContent = totalSlides;
+
+    function showSlide(index) {
+      if (index < 0) index = 0;
+      if (index >= totalSlides) index = totalSlides - 1;
+
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === index);
+      });
+
+      currentIndex = index;
+      currentSlideNum.textContent = currentIndex + 1;
+      progressBar.style.width = `${((currentIndex + 1) / totalSlides) * 100}%`;
+
+      btnPrev.disabled = currentIndex === 0;
+      btnNext.disabled = currentIndex === totalSlides - 1;
+    }
+
+    btnPrev.addEventListener('click', () => showSlide(currentIndex - 1));
+    btnNext.addEventListener('click', () => showSlide(currentIndex + 1));
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        showSlide(currentIndex + 1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        showSlide(currentIndex - 1);
+      } else if (e.key === 'Home') {
+        showSlide(0);
+      } else if (e.key === 'End') {
+        showSlide(totalSlides - 1);
+      }
+    });
+
+    // Touch swipe support for mobile devices
+    let touchStartX = 0;
+    document.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    document.addEventListener('touchend', (e) => {
+      const touchEndX = e.changedTouches[0].screenX;
+      if (touchStartX - touchEndX > 50) {
+        showSlide(currentIndex + 1); // Swipe left -> next slide
+      } else if (touchEndX - touchStartX > 50) {
+        showSlide(currentIndex - 1); // Swipe right -> prev slide
+      }
+    }, { passive: true });
+
+    // Initial display
+    showSlide(0);
+  </script>
+</body>
+</html>

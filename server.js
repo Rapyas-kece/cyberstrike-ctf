@@ -12,6 +12,14 @@ const forensicsChallengeRoutes = require('./challenges/forensicsRoutes');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Prevent server process crashes from unhandled asynchronous errors or bugs
+process.on('uncaughtException', (err) => {
+  console.error('[UNCAUGHT EXCEPTION]', err);
+});
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('[UNHANDLED REJECTION]', reason);
+});
+
 // Trust proxy for reverse proxies like Cloudflare Tunnel
 app.set('trust proxy', 1);
 

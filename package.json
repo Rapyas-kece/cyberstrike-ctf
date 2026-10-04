@@ -6,7 +6,11 @@
   "scripts": {
     "start": "node server.js",
     "public": "node run_public.js",
-    "tunnel": "bin\\cloudflared.exe tunnel --url http://localhost:3000",
+    "tunnel": "bin\\cloudflared.exe tunnel --url http://localhost:3000 --logfile logs\\tunnel-err.log",
+    "tunnel:url": "type logs\\current_url.txt",
+    "startup": "powershell -ExecutionPolicy Bypass -File start_ctf.ps1",
+    "watchdog": "powershell -ExecutionPolicy Bypass -File watchdog.ps1",
+    "status": "powershell -Command \"$s='DOWN';try{Invoke-WebRequest http://localhost:3000/api/me -TimeoutSec 3 -UseBasicParsing|Out-Null;$s='ONLINE'}catch{};$c=@(Get-Process cloudflared -EA SilentlyContinue).Count;$u=if(Test-Path logs/current_url.txt){Get-Content logs/current_url.txt}else{'N/A'};Write-Host 'Server:'$s'| Tunnel:'$c'proc(s) | URL:'$u\"",
     "test": "node test/test_platform.js",
     "generate:artifacts": "python generate_artifacts.py"
   },

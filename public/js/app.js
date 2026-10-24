@@ -327,7 +327,10 @@ function renderScoreboard() {
     return;
   }
 
-  tbody.innerHTML = board.map(item => {
+  const displayLimit = 100;
+  const displayBoard = board.slice(0, displayLimit);
+
+  let rowsHtml = displayBoard.map(item => {
     let rankBadge = item.rank;
     let rankClass = '';
     if (item.rank === 1) { rankBadge = '🥇 1'; rankClass = 'rank-top1'; }
@@ -357,6 +360,18 @@ function renderScoreboard() {
       </tr>
     `;
   }).join('');
+
+  if (board.length > displayLimit) {
+    rowsHtml += `
+      <tr>
+        <td colspan="9" style="text-align: center; color: var(--text-dim); padding: 1.25rem; font-size: 0.85rem; background: rgba(0,0,0,0.2);">
+          ⚡ Menampilkan 100 peringkat teratas dari total ${board.length} peserta.
+        </td>
+      </tr>
+    `;
+  }
+
+  tbody.innerHTML = rowsHtml;
 }
 
 // ===================================================================

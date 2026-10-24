@@ -93,7 +93,7 @@ function readJSON(filePath, defaultVal = []) {
       }
       return defaultVal;
     }
-    const raw = fs.readFileSync(filePath, 'utf-8');
+    const raw = fs.readFileSync(filePath, 'utf-8').replace(/^\uFEFF/, '');
     const data = JSON.parse(raw);
     memoryStore[filePath] = data;
     return data;
@@ -325,8 +325,19 @@ app.get('/api/scoreboard', (req, res) => {
   const users = readJSON(USERS_FILE);
   const solves = readJSON(SOLVES_FILE);
 
+  // Index solves by userId for fast O(1) lookups
+  const userSolvesMap = new Map();
+  solves.forEach(s => {
+    let list = userSolvesMap.get(s.userId);
+    if (!list) {
+      list = [];
+      userSolvesMap.set(s.userId, list);
+    }
+    list.push(s);
+  });
+
   const leaderboard = users.map(user => {
-    const userSolves = solves.filter(s => s.userId === user.id);
+    const userSolves = userSolvesMap.get(user.id) || [];
     const totalPoints = userSolves.reduce((sum, s) => sum + s.points, 0);
     const lastSolveTime = userSolves.length > 0 
       ? Math.max(...userSolves.map(s => s.timestamp)) 

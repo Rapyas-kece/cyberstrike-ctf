@@ -181,7 +181,14 @@ async function runCTFTestSuite() {
   });
 
   // Wait for server boot
-  await new Promise(r => setTimeout(r, 1200));
+  await new Promise((resolve) => {
+    srv.stdout.on('data', d => {
+      if (d.toString().includes('CTF PLATFORM IS RUNNING ONLINE')) {
+        resolve();
+      }
+    });
+    setTimeout(resolve, 3000);
+  });
 
   function request(options, postData = null) {
     return new Promise((resolve, reject) => {

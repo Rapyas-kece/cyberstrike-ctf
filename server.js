@@ -44,17 +44,59 @@ const submitLimiter = rateLimit({
   message: { success: false, message: 'Terlalu banyak percobaan pengiriman flag! Harap tunggu sebentar.' }
 });
 
-// Paths to persistence data files
+const os = require('os');
+
+// Storage configuration (supporting both local and Vercel serverless tmp fallback)
+const isVercel = !!process.env.VERCEL;
+const DATA_DIR = isVercel ? os.tmpdir() : path.join(__dirname, 'data');
+const USERS_FILE = path.join(DATA_DIR, 'users.json');
+const SOLVES_FILE = path.join(DATA_DIR, 'solves.json');
 const CHALLENGES_FILE = path.join(__dirname, 'data', 'challenges.json');
-const USERS_FILE = path.join(__dirname, 'data', 'users.json');
-const SOLVES_FILE = path.join(__dirname, 'data', 'solves.json');
+
+// Initialize /tmp storage on Vercel from packaged templates if needed
+if (isVercel) {
+  try {
+    if (!fs.existsSync(USERS_FILE)) {
+      const srcUsers = path.join(__dirname, 'data', 'users.json');
+      if (fs.existsSync(srcUsers)) fs.copyFileSync(srcUsers, USERS_FILE);
+    }
+    if (!fs.existsSync(SOLVES_FILE)) {
+      const srcSolves = path.join(__dirname, 'data', 'solves.json');
+      if (fs.existsSync(srcSolves)) fs.copyFileSync(srcSolves, SOLVES_FILE);
+    }
+  } catch (e) {
+    console.warn('[Storage] Notice: Failed to copy to /tmp:', e.message);
+  }
+}
+
+// In-memory cache to prevent constant multi-megabyte disk re-reads and ensure resilience
+const memoryStore = {
+  [CHALLENGES_FILE]: null,
+  [USERS_FILE]: null,
+  [SOLVES_FILE]: null
+};
 
 // Helper to safely read JSON files
 function readJSON(filePath, defaultVal = []) {
+  if (memoryStore[filePath]) return memoryStore[filePath];
+
   try {
-    if (!fs.existsSync(filePath)) return defaultVal;
+    if (!fs.existsSync(filePath)) {
+      if (isVercel) {
+        const fallback = path.join(__dirname, 'data', path.basename(filePath));
+        if (fs.existsSync(fallback)) {
+          const raw = fs.readFileSync(fallback, 'utf-8');
+          const data = JSON.parse(raw);
+          memoryStore[filePath] = data;
+          return data;
+        }
+      }
+      return defaultVal;
+    }
     const raw = fs.readFileSync(filePath, 'utf-8');
-    return JSON.parse(raw);
+    const data = JSON.parse(raw);
+    memoryStore[filePath] = data;
+    return data;
   } catch (err) {
     console.error(`Error reading ${filePath}:`, err);
     return defaultVal;
@@ -63,11 +105,12 @@ function readJSON(filePath, defaultVal = []) {
 
 // Helper to safely write JSON files
 function writeJSON(filePath, data) {
+  memoryStore[filePath] = data;
   try {
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
     return true;
   } catch (err) {
-    console.error(`Error writing ${filePath}:`, err);
+    console.error(`Error writing ${filePath}:`, err.message);
     return false;
   }
 }
@@ -414,11 +457,16 @@ app.use((err, req, res, next) => {
   }
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`====================================================`);
-  console.log(`🛡️  CTF PLATFORM IS RUNNING ONLINE`);
-  console.log(`📡 URL: http://localhost:${PORT}`);
-  console.log(`🎯 Categories: Web Exploitation (ravid), Crypto (jason), Forensics (jason)`);
-  console.log(`====================================================`);
-});
+// Start server if executed directly (e.g. node server.js)
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`====================================================`);
+    console.log(`🛡️  CTF PLATFORM IS RUNNING ONLINE`);
+    console.log(`📡 URL: http://localhost:${PORT}`);
+    console.log(`🎯 Categories: Web Exploitation (ravid), Crypto (jason), Forensics (jason)`);
+    console.log(`====================================================`);
+  });
+}
+
+module.exports = app;
+

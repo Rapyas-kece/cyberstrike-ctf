@@ -5,6 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
+    "stop": "powershell -Command \"schtasks /change /tn 'CTF-Server-Watchdog' /disable 2>$null; Get-Process -Name node, cloudflared -EA SilentlyContinue | Stop-Process -Force -EA SilentlyContinue; Write-Host 'Server, Tunnel & Watchdog OFF'\"",
     "public": "node run_public.js",
     "tunnel": "bin\\cloudflared.exe tunnel --url http://localhost:3000 --logfile logs\\tunnel-err.log",
     "tunnel:url": "type logs\\current_url.txt",

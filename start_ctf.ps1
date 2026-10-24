@@ -1,4 +1,4 @@
-﻿# CTF Platform Startup Script - Auto-runs at Windows Logon
+# CTF Platform Startup Script - Auto-runs at Windows Logon
 # Uses VBScript launchers for truly detached processes (survive PS session end)
 $logFile = "D:\ctf\logs\startup.log"
 function Write-Log($msg) {
@@ -39,8 +39,17 @@ if ($content -match 'https://[a-z0-9-]+\.trycloudflare\.com') {
     $url = $matches[0]
     Write-Log "URL: $url"
     $url | Set-Content "D:\ctf\logs\current_url.txt" -Encoding UTF8
+    Write-Host "`n=======================================================" -ForegroundColor Cyan
+    Write-Host "   CTF PUBLIC URL: $url" -ForegroundColor Green
+    Write-Host "=======================================================`n" -ForegroundColor Cyan
 } else {
     Write-Log "URL not yet available (will be captured by watchdog)"
+    Write-Host "`n[!] URL tunnel sedang diproses, cek dengan: npm run status`n" -ForegroundColor Yellow
 }
 
+# Re-enable watchdog scheduled task
+schtasks /change /tn "CTF-Server-Watchdog" /enable 2>$null
+
 Write-Log "=== Startup Complete ==="
+exit 0
+

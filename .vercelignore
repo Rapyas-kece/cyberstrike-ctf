@@ -1,0 +1,17 @@
+bin/
+logs/
+*.bak
+*.pptx
+*.zip
+*.ps1
+*.vbs
+scratch/
+test/
+generate_artifacts.py
+ecosystem.config.js
+run_public.js
+tcp_bridge.js
+connect.js
+input.txt
+node_modules/
+.git/
